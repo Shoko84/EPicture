@@ -7,7 +7,7 @@ using System.Windows;
 
 namespace epicture
 {
-    class TokenInfoArgs : RoutedEventArgs
+    public class TokenInfoArgs : RoutedEventArgs
     {
         private readonly string publicKey;
 

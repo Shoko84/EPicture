@@ -16,13 +16,13 @@ using System.Windows.Shapes;
 namespace epicture
 {
     /// <summary>
-    /// Interaction logic for UploadControl.xaml
+    /// Interaction logic for FavoritesControl.xaml
     /// </summary>
-    public partial class UploadControl : UserControl
+    public partial class FavoritesControl : UserControl
     {
         FlickrManager FlickrManager;
 
-        public UploadControl(FlickrManager flickrManager)
+        public FavoritesControl(FlickrManager flickrManager)
         {
             InitializeComponent();
             FlickrManager = flickrManager;

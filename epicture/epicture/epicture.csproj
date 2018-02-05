@@ -59,6 +59,17 @@
     <Compile Include="ExploreControl.xaml.cs">
       <DependentUpon>ExploreControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="FavoritesControl.xaml.cs">
+      <DependentUpon>FavoritesControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GraphicUtils.cs" />
+    <Compile Include="Picture.xaml.cs">
+      <DependentUpon>Picture.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PictureInfoArgs.cs" />
+    <Compile Include="PictureViewer.xaml.cs">
+      <DependentUpon>PictureViewer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TokenAuthentificationControl.xaml.cs">
       <DependentUpon>TokenAuthentificationControl.xaml</DependentUpon>
     </Compile>
@@ -67,6 +78,10 @@
       <DependentUpon>UploadControl.xaml</DependentUpon>
     </Compile>
     <Page Include="ExploreControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FavoritesControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -83,6 +98,14 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Picture.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PictureViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="TokenAuthentificationControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

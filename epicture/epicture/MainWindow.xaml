@@ -17,17 +17,20 @@
                 <RowDefinition Height="20"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="50*"/>
-                <ColumnDefinition Width="50*"/>
+                <ColumnDefinition Width="33*"/>
+                <ColumnDefinition Width="33*"/>
+                <ColumnDefinition Width="33*"/>
             </Grid.ColumnDefinitions>
             <Label Name="ExploreLabel" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand"
-                   Content="XPLORE" Foreground="#f5f6fa" FontSize="15" />
+                   Content="EXPLORE" Foreground="#f5f6fa" FontSize="15" MouseDown="ExploreLabel_MouseDown"/>
             <Label Name="UploadLabel" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand"
-                   Content="UPLOAD" Foreground="#f5f6fa" FontSize="15" />
-            <Button Name="TopNavBarButtonHandler" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" VerticalContentAlignment="Top"
+                   Content="UPLOAD" Foreground="#f5f6fa" FontSize="15" MouseDown="UploadLabel_MouseDown"/>
+            <Label Name="FavoritesLabel" Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Cursor="Hand"
+                   Content="FAVORITES" Foreground="#f5f6fa" FontSize="15" MouseDown="FavoritesLabel_MouseDown"/>
+            <Button Name="TopNavBarButtonHandler" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" VerticalContentAlignment="Top"
                     Width="40" Height="15" Content="^" Background="#353b48" Foreground="#f5f6fa" Click="TopNavBarButtonHandler_Click"/>
         </Grid>
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" Margin="5">
             <ContentControl Name="ContentControl"/>
         </Grid>
     </Grid>

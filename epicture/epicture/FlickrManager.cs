@@ -11,9 +11,9 @@ namespace epicture
     {
         private Flickr Client;
 
-        public FlickrManager(string publicKey)
+        public FlickrManager(string publicKey, string secretKey)
         {
-            Client = new Flickr(publicKey);
+            Client = new Flickr(publicKey, secretKey);
         }
 
         public PhotoCollection SearchPhotos(string tags, uint perPage, uint page)
@@ -22,6 +22,25 @@ namespace epicture
             PhotoCollection photos = Client.PhotosSearch(options);
 
             return (photos);
+        }
+
+        public PhotoCollection SearchFavorites()
+        {
+            PhotoCollection photos = Client.FavoritesGetList();
+
+            return (photos);
+        }
+
+        public void AddFavoritePicture(string photoId)
+        {
+            if (Client.IsAuthenticated)
+                Client.FavoritesAdd(photoId);
+        }
+
+        public void RemoveFavoritePicture(string photoId)
+        {
+            if (Client.IsAuthenticated)
+                Client.FavoritesRemove(photoId);
         }
     }
 }
