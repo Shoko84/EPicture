@@ -22,30 +22,16 @@ namespace epicture
     public partial class MainWindow : Window
     {
         FlickrManager                   flickrManager;
-        TokenAuthentificationControl    tokenAuthControl;
         ExploreControl                  exploreControl;
         UploadControl                   uploadControl;
 
         public MainWindow()
         {
             InitializeComponent();
-            TopNavBar.Visibility = Visibility.Hidden;
-            tokenAuthControl = new TokenAuthentificationControl();
+            flickrManager = new FlickrManager("3615954777bd6d01b49492bfd402debf");
             exploreControl = new ExploreControl();
             uploadControl = new UploadControl();
-            ContentControl.Content = tokenAuthControl;
-
-            AddHandler(TokenAuthentificationControl.ConfirmPublicKeyAPI,
-                       new RoutedEventHandler(ConfirmPublicKeyAPIHandler));
-        }
-
-        private void ConfirmPublicKeyAPIHandler(object sender, RoutedEventArgs e)
-        {
-            TokenInfoArgs args = e as TokenInfoArgs;
-
-            flickrManager = new FlickrManager(args.PublicKey);
             ContentControl.Content = exploreControl;
-            TopNavBar.Visibility = Visibility.Visible;
         }
 
         private void TopNavBarButtonHandler_Click(object sender, RoutedEventArgs e)

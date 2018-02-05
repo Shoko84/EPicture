@@ -13,7 +13,6 @@ namespace epicture
 
         public FlickrManager(string publicKey)
         {
-            //3615954777bd6d01b49492bfd402debf
             Client = new Flickr(publicKey);
         }
 
