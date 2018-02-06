@@ -10,8 +10,23 @@ namespace epicture
     public class FlickrManager
     {
         private Flickr Client;
+        private OAuthRequestToken requestToken;
+        private static FlickrManager instance;
+        public static FlickrManager Instance
+        {
+            get {
+                if (instance == null)
+                    instance = new FlickrManager();
+                return (instance);
+            }
+        }
 
-        public FlickrManager(string publicKey, string secretKey)
+        private FlickrManager()
+        {
+
+        }
+
+        public void Connect(string publicKey, string secretKey)
         {
             Client = new Flickr(publicKey, secretKey);
         }
@@ -26,21 +41,45 @@ namespace epicture
 
         public PhotoCollection SearchFavorites()
         {
-            PhotoCollection photos = Client.FavoritesGetList();
+            if (Client.IsAuthenticated)
+            {
+                PhotoCollection photos = Client.FavoritesGetList();
 
-            return (photos);
+                return (photos);
+            }
+            else
+                throw new UserNotAuthenticatedException("The user is not authenticated.");
         }
 
         public void AddFavoritePicture(string photoId)
         {
             if (Client.IsAuthenticated)
                 Client.FavoritesAdd(photoId);
+            else
+                throw new UserNotAuthenticatedException("The user is not authenticated.");
         }
 
         public void RemoveFavoritePicture(string photoId)
         {
             if (Client.IsAuthenticated)
                 Client.FavoritesRemove(photoId);
+            else
+                throw new UserNotAuthenticatedException("The user is not authenticated.");
+        }
+
+        public void UserAuthenticationRequest()
+        {
+            FlickrManager f = FlickrManager.Instance;
+            requestToken = f.Client.OAuthGetRequestToken("oob");
+
+            string url = f.Client.OAuthCalculateAuthorizationUrl(requestToken.Token, AuthLevel.Write);
+
+            System.Diagnostics.Process.Start(url);
+        }
+
+        public void UserAuthenticationAnswer()
+        {
+
         }
     }
 }

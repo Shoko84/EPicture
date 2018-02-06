@@ -23,7 +23,6 @@ namespace epicture
 
     public partial class MainWindow : Window
     {
-        FlickrManager                   flickrManager;
         ExploreControl                  exploreControl;
         FavoritesControl                favoritesControl;
         UploadControl                   uploadControl;
@@ -31,10 +30,10 @@ namespace epicture
         public MainWindow()
         {
             InitializeComponent();
-            flickrManager = new FlickrManager("b0cfac361f6ef2f56451b914bbb1faf9", "669e471cad095d80");
-            exploreControl = new ExploreControl(flickrManager);
-            uploadControl = new UploadControl(flickrManager);
-            favoritesControl = new FavoritesControl(flickrManager);
+            FlickrManager.Instance.Connect("b0cfac361f6ef2f56451b914bbb1faf9", "669e471cad095d80");
+            exploreControl = new ExploreControl();
+            uploadControl = new UploadControl();
+            favoritesControl = new FavoritesControl();
             ContentControl.Content = exploreControl;
         }
 

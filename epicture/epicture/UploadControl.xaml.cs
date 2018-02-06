@@ -20,12 +20,9 @@ namespace epicture
     /// </summary>
     public partial class UploadControl : UserControl
     {
-        FlickrManager FlickrManager;
-
-        public UploadControl(FlickrManager flickrManager)
+        public UploadControl()
         {
             InitializeComponent();
-            FlickrManager = flickrManager;
         }
     }
 }

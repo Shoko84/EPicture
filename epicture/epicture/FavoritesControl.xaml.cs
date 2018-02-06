@@ -20,12 +20,9 @@ namespace epicture
     /// </summary>
     public partial class FavoritesControl : UserControl
     {
-        FlickrManager FlickrManager;
-
-        public FavoritesControl(FlickrManager flickrManager)
+        public FavoritesControl()
         {
             InitializeComponent();
-            FlickrManager = flickrManager;
         }
     }
 }

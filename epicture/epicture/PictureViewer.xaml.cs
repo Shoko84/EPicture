@@ -32,39 +32,11 @@ namespace epicture
             EventManager.RegisterRoutedEvent("NextPageAskedEvent", RoutingStrategy.Bubble,
             typeof(RoutedEventArgs), typeof(PictureViewer));
 
-        public static readonly RoutedEvent SetFavoriteFromPictureViewerEvent =
-            EventManager.RegisterRoutedEvent("SetFavoriteFromPictureViewerEvent", RoutingStrategy.Bubble,
-            typeof(PictureInfoArgs), typeof(PictureViewer));
-
-        public static readonly RoutedEvent RemoveFavoriteFromPictureViewerEvent =
-            EventManager.RegisterRoutedEvent("RemoveFavoriteFromPictureViewerEvent", RoutingStrategy.Bubble,
-            typeof(PictureInfoArgs), typeof(PictureViewer));
-
         public PictureViewer()
         {
             InitializeComponent();
             CurrentPage = 1;
             Pictures = new PhotoCollection();
-
-            AddHandler(Picture.SetFavoriteFromPictureEvent,
-                       new RoutedEventHandler(SetFavoriteFromPictureHandler));
-
-            AddHandler(Picture.RemoveFavoriteFromPictureEvent,
-                       new RoutedEventHandler(RemoveFavoriteFromPictureHandler));
-        }
-
-        private void SetFavoriteFromPictureHandler(object sender, RoutedEventArgs e)
-        {
-            PictureInfoArgs args = e as PictureInfoArgs;
-
-            RaiseEvent(new PictureInfoArgs(PictureViewer.SetFavoriteFromPictureViewerEvent, args.PhotoId));
-        }
-
-        private void RemoveFavoriteFromPictureHandler(object sender, RoutedEventArgs e)
-        {
-            PictureInfoArgs args = e as PictureInfoArgs;
-
-            RaiseEvent(new PictureInfoArgs(PictureViewer.RemoveFavoriteFromPictureViewerEvent, args.PhotoId));
         }
 
         public void SetPictures(PhotoCollection pictures, uint currentPage)

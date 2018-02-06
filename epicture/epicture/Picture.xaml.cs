@@ -23,13 +23,9 @@ namespace epicture
     {
         Photo PhotoInfo;
 
-        public static readonly RoutedEvent SetFavoriteFromPictureEvent =
-            EventManager.RegisterRoutedEvent("SetFavoriteFromPictureEvent", RoutingStrategy.Bubble,
-            typeof(PictureInfoArgs), typeof(Picture));
-
-        public static readonly RoutedEvent RemoveFavoriteFromPictureEvent =
-            EventManager.RegisterRoutedEvent("RemoveFavoriteFromPictureEvent", RoutingStrategy.Bubble,
-            typeof(PictureInfoArgs), typeof(Picture));
+        public static readonly RoutedEvent UserAuthenticatedRequestFromPictureEvent =
+            EventManager.RegisterRoutedEvent("UserAuthenticatedRequestFromPictureEvent", RoutingStrategy.Bubble,
+            typeof(RoutedEventArgs), typeof(PictureViewer));
 
         public Picture(Photo photoInfo)
         {
@@ -45,13 +41,27 @@ namespace epicture
         {
             if (PhotoInfo.DateFavorited == null)
             {
-                RaiseEvent(new PictureInfoArgs(Picture.SetFavoriteFromPictureEvent, PhotoInfo.PhotoId));
-                PictureFavoriteButton.Content = "Unfavorite";
+                try
+                {
+                    FlickrManager.Instance.AddFavoritePicture(PhotoInfo.PhotoId);
+                    PictureFavoriteButton.Content = "Unfavorite";
+                }
+                catch (UserNotAuthenticatedException ex)
+                {
+                    RaiseEvent(new RoutedEventArgs(Picture.UserAuthenticatedRequestFromPictureEvent));
+                }
             }
             else
             {
-                RaiseEvent(new PictureInfoArgs(Picture.RemoveFavoriteFromPictureEvent, PhotoInfo.PhotoId));
-                PictureFavoriteButton.Content = "Favorite";
+                try
+                {
+                    FlickrManager.Instance.RemoveFavoritePicture(PhotoInfo.PhotoId);
+                    PictureFavoriteButton.Content = "Unfavorite";
+                }
+                catch (UserNotAuthenticatedException ex)
+                {
+
+                }
             }
         }
     }
