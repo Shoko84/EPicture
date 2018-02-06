@@ -19,18 +19,21 @@ namespace epicture
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    /// 
+
     public partial class MainWindow : Window
     {
-        FlickrManager                   flickrManager;
         ExploreControl                  exploreControl;
+        FavoritesControl                favoritesControl;
         UploadControl                   uploadControl;
 
         public MainWindow()
         {
             InitializeComponent();
-            flickrManager = new FlickrManager("3615954777bd6d01b49492bfd402debf");
+            FlickrManager.Instance.Connect("b0cfac361f6ef2f56451b914bbb1faf9", "669e471cad095d80");
             exploreControl = new ExploreControl();
             uploadControl = new UploadControl();
+            favoritesControl = new FavoritesControl();
             ContentControl.Content = exploreControl;
         }
 
@@ -43,6 +46,7 @@ namespace epicture
                 TopNavBarButtonHandler.VerticalContentAlignment = VerticalAlignment.Center;
                 ExploreLabel.Visibility = Visibility.Hidden;
                 UploadLabel.Visibility = Visibility.Hidden;
+                FavoritesLabel.Visibility = Visibility.Hidden;
             }
             else
             {
@@ -51,7 +55,23 @@ namespace epicture
                 TopNavBarButtonHandler.VerticalContentAlignment = VerticalAlignment.Top;
                 ExploreLabel.Visibility = Visibility.Visible;
                 UploadLabel.Visibility = Visibility.Visible;
+                FavoritesLabel.Visibility = Visibility.Visible;
             }
+        }
+
+        private void ExploreLabel_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ContentControl.Content = exploreControl;
+        }
+
+        private void UploadLabel_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ContentControl.Content = uploadControl;
+        }
+
+        private void FavoritesLabel_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ContentControl.Content = favoritesControl;
         }
     }
 }
