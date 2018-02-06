@@ -25,12 +25,17 @@ namespace epicture
 
         public static readonly RoutedEvent UserAuthenticatedRequestFromPictureEvent =
             EventManager.RegisterRoutedEvent("UserAuthenticatedRequestFromPictureEvent", RoutingStrategy.Bubble,
-            typeof(RoutedEventArgs), typeof(PictureViewer));
+            typeof(RoutedEventArgs), typeof(Picture));
+
+        public static readonly RoutedEvent ChangeFavoriteEvent =
+            EventManager.RegisterRoutedEvent("ChangeFavoriteEvent", RoutingStrategy.Bubble,
+            typeof(PictureInfoArgs), typeof(Picture));
 
         public Picture(Photo photoInfo)
         {
             InitializeComponent();
             PhotoInfo = photoInfo;
+            PictureFavoriteButton.Content = (PhotoInfo.DateFavorited == null) ? ("Favorite") : ("Unfavorite");
             PictureTitle.Text = PhotoInfo.Title;
             Image img = GraphicUtils.LoadImage(PhotoInfo.Small320Url, 250, 250);
             Grid.SetRow(img, 1);
@@ -45,9 +50,11 @@ namespace epicture
                 {
                     FlickrManager.Instance.AddFavoritePicture(PhotoInfo.PhotoId);
                     PictureFavoriteButton.Content = "Unfavorite";
+                    RaiseEvent(new PictureInfoArgs(Picture.ChangeFavoriteEvent, PhotoInfo));
                 }
-                catch (UserNotAuthenticatedException ex)
+                catch (UserAuthenticationException)
                 {
+                    FlickrManager.Instance.UserAuthenticationRequest();
                     RaiseEvent(new RoutedEventArgs(Picture.UserAuthenticatedRequestFromPictureEvent));
                 }
             }
@@ -56,11 +63,13 @@ namespace epicture
                 try
                 {
                     FlickrManager.Instance.RemoveFavoritePicture(PhotoInfo.PhotoId);
-                    PictureFavoriteButton.Content = "Unfavorite";
+                    PictureFavoriteButton.Content = "Favorite";
+                    RaiseEvent(new PictureInfoArgs(Picture.ChangeFavoriteEvent, PhotoInfo));
                 }
-                catch (UserNotAuthenticatedException ex)
+                catch (UserAuthenticationException)
                 {
-
+                    FlickrManager.Instance.UserAuthenticationRequest();
+                    RaiseEvent(new RoutedEventArgs(Picture.UserAuthenticatedRequestFromPictureEvent));
                 }
             }
         }

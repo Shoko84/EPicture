@@ -14,7 +14,7 @@
             <RowDefinition Height="15*"/>
             <RowDefinition Height="30*"/>
         </Grid.RowDefinitions>
-        <Label Grid.Row="1" Content="Please enter your public key :" Foreground="#f5f6fa" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <Label Grid.Row="1" Content="Please enter your token :" Foreground="#f5f6fa" VerticalAlignment="Center" HorizontalAlignment="Center"/>
         <TextBox Name="PublicKeyTextBox" Grid.Row="2" VerticalAlignment="Center" Width="250"/>
         <Button Name="ConfirmButton" Grid.Row="3" Content="Confirm" Width="90" Height="25" VerticalAlignment="Bottom" Click="ConfirmButton_Click"/>
     </Grid>

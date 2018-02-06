@@ -24,12 +24,8 @@ namespace epicture
         PhotoCollection Pictures;
         uint            CurrentPage;
 
-        public static readonly RoutedEvent PrevPageAskedEvent =
-            EventManager.RegisterRoutedEvent("PrevPageAskedEvent", RoutingStrategy.Bubble,
-            typeof(RoutedEventArgs), typeof(PictureViewer));
-
-        public static readonly RoutedEvent NextPageAskedEvent =
-            EventManager.RegisterRoutedEvent("NextPageAskedEvent", RoutingStrategy.Bubble,
+        public static readonly RoutedEvent UserAuthenticatedRequestFromPictureViewerEvent =
+            EventManager.RegisterRoutedEvent("UserAuthenticatedRequestFromPictureViewerEvent", RoutingStrategy.Bubble,
             typeof(RoutedEventArgs), typeof(PictureViewer));
 
         public PictureViewer()
@@ -37,8 +33,31 @@ namespace epicture
             InitializeComponent();
             CurrentPage = 1;
             Pictures = new PhotoCollection();
+
+            AddHandler(Picture.UserAuthenticatedRequestFromPictureEvent,
+                       new RoutedEventHandler(UserAuthenticatedRequestFromPictureHandler));
+
+            AddHandler(Picture.ChangeFavoriteEvent,
+                       new RoutedEventHandler(ChangeFavoriteHandler));
         }
 
+        private void UserAuthenticatedRequestFromPictureHandler(object sender, RoutedEventArgs e)
+        {
+            RaiseEvent(new RoutedEventArgs(PictureViewer.UserAuthenticatedRequestFromPictureViewerEvent));
+        }
+        private void ChangeFavoriteHandler(object sender, RoutedEventArgs e)
+        {
+            //PictureInfoArgs args = e as PictureInfoArgs;
+
+            SetPictures(FlickrManager.Instance.SearchPhotos());
+        }
+
+        public void SetPictures(PhotoCollection pictures)
+        {
+            Pictures = pictures;
+            PrevPageButton.IsEnabled = (CurrentPage == 1) ? (false) : (true);
+            RefreshPicturesOnScreen();
+        }
         public void SetPictures(PhotoCollection pictures, uint currentPage)
         {
             Pictures = pictures;
@@ -52,6 +71,7 @@ namespace epicture
             ViewerContainer.Children.Clear();
             for (var i = 0; i < Pictures.Count; ++i)
             {
+                var p = Pictures[i];
                 Picture picture = new Picture(Pictures[i])
                 {
                     Margin = new Thickness(15)
@@ -65,7 +85,7 @@ namespace epicture
             CurrentPage -= 1;
             if (CurrentPage == 1)
                 PrevPageButton.IsEnabled = false;
-            RaiseEvent(new RoutedEventArgs(PictureViewer.PrevPageAskedEvent));
+            SetPictures(FlickrManager.Instance.SearchPhotos(20, CurrentPage), CurrentPage);
             ScrollerViewer.ScrollToTop();
         }
 
@@ -73,7 +93,7 @@ namespace epicture
         {
             CurrentPage += 1;
             PrevPageButton.IsEnabled = true;
-            RaiseEvent(new RoutedEventArgs(PictureViewer.NextPageAskedEvent));
+            SetPictures(FlickrManager.Instance.SearchPhotos(20, CurrentPage), CurrentPage);
             ScrollerViewer.ScrollToTop();
         }
     }

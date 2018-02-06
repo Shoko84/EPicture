@@ -20,9 +20,9 @@ namespace epicture
     /// </summary>
     public partial class TokenAuthentificationControl : UserControl
     {
-        public static readonly RoutedEvent ConfirmPublicKeyAPI =
-            EventManager.RegisterRoutedEvent("ConfirmPublicKeyAPI", RoutingStrategy.Bubble,
-            typeof(TokenInfoArgs), typeof(TokenAuthentificationControl));
+        public static readonly RoutedEvent ConfirmUserTokenEvent =
+            EventManager.RegisterRoutedEvent("ConfirmUserTokenEvent", RoutingStrategy.Bubble,
+            typeof(RoutedEventArgs), typeof(TokenAuthentificationControl));
 
         public TokenAuthentificationControl()
         {
@@ -31,7 +31,15 @@ namespace epicture
 
         private void ConfirmButton_Click(object sender, RoutedEventArgs e)
         {
-            RaiseEvent(new TokenInfoArgs(TokenAuthentificationControl.ConfirmPublicKeyAPI, PublicKeyTextBox.Text));
+            try
+            {
+                FlickrManager.Instance.UserAuthenticationAnswer(PublicKeyTextBox.Text);
+                RaiseEvent(new RoutedEventArgs(TokenAuthentificationControl.ConfirmUserTokenEvent));
+            }
+            catch (UserAuthenticationException)
+            {
+                //TODO: try again
+            }
         }
     }
 }

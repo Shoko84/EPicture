@@ -11,6 +11,12 @@ namespace epicture
     {
         private Flickr Client;
         private OAuthRequestToken requestToken;
+        private OAuthAccessToken accessToken;
+
+        private string localTags;
+        private uint perPage;
+        private uint localCurrentPage;
+
         private static FlickrManager instance;
         public static FlickrManager Instance
         {
@@ -23,7 +29,9 @@ namespace epicture
 
         private FlickrManager()
         {
-
+            localTags = "";
+            perPage = 20;
+            localCurrentPage = 1;
         }
 
         public void Connect(string publicKey, string secretKey)
@@ -31,55 +39,101 @@ namespace epicture
             Client = new Flickr(publicKey, secretKey);
         }
 
+        public PhotoCollection SearchPhotos()
+        {
+            if (localTags != "")
+            {
+                var options = new PhotoSearchOptions { Tags = localTags, PerPage = Convert.ToInt32(perPage), Page = Convert.ToInt32(localCurrentPage) };
+                PhotoCollection photos = Client.PhotosSearch(options);
+
+                if (Client.OAuthAccessToken != null)
+                {
+                    PhotoCollection favorites = SearchFavorites();
+
+                    for (var i = 0; i < photos.Count; ++i)
+                    {
+                        for (var j = 0; j < favorites.Count; ++j)
+                        {
+                            if (photos[i].PhotoId == favorites[j].PhotoId)
+                                photos[i] = favorites[j];
+                        }
+                    }
+                }
+
+                return (photos);
+            }
+            else
+                return (new PhotoCollection()); //TODO exception
+        }
+
+        public PhotoCollection SearchPhotos(uint page)
+        {
+            localCurrentPage = page;
+            return (SearchPhotos());
+        }
+
+        public PhotoCollection SearchPhotos(uint perPage, uint page)
+        {
+            this.perPage = perPage;
+            localCurrentPage = page;
+            return (SearchPhotos());
+        }
+
         public PhotoCollection SearchPhotos(string tags, uint perPage, uint page)
         {
-            var options = new PhotoSearchOptions { Tags = tags, PerPage = Convert.ToInt32(perPage), Page = Convert.ToInt32(page) };
-            PhotoCollection photos = Client.PhotosSearch(options);
-
-            return (photos);
+            localTags = tags;
+            this.perPage = perPage;
+            localCurrentPage = page;
+            return (SearchPhotos());
         }
 
         public PhotoCollection SearchFavorites()
         {
-            if (Client.IsAuthenticated)
+            if (Client.OAuthAccessToken != null)
             {
                 PhotoCollection photos = Client.FavoritesGetList();
 
                 return (photos);
             }
             else
-                throw new UserNotAuthenticatedException("The user is not authenticated.");
+                throw new UserAuthenticationException("The user is not authenticated.");
         }
 
         public void AddFavoritePicture(string photoId)
         {
-            if (Client.IsAuthenticated)
+            if (Client.OAuthAccessToken != null)
                 Client.FavoritesAdd(photoId);
             else
-                throw new UserNotAuthenticatedException("The user is not authenticated.");
+                throw new UserAuthenticationException("The user is not authenticated.");
         }
 
         public void RemoveFavoritePicture(string photoId)
         {
-            if (Client.IsAuthenticated)
+            if (Client.OAuthAccessToken != null)
                 Client.FavoritesRemove(photoId);
             else
-                throw new UserNotAuthenticatedException("The user is not authenticated.");
+                throw new UserAuthenticationException("The user is not authenticated.");
         }
 
         public void UserAuthenticationRequest()
         {
-            FlickrManager f = FlickrManager.Instance;
-            requestToken = f.Client.OAuthGetRequestToken("oob");
+            requestToken = Client.OAuthGetRequestToken("oob");
 
-            string url = f.Client.OAuthCalculateAuthorizationUrl(requestToken.Token, AuthLevel.Write);
+            string url = Client.OAuthCalculateAuthorizationUrl(requestToken.Token, AuthLevel.Read | AuthLevel.Write);
 
             System.Diagnostics.Process.Start(url);
         }
 
-        public void UserAuthenticationAnswer()
+        public void UserAuthenticationAnswer(string token)
         {
-
+            try
+            {
+                accessToken = Client.OAuthGetAccessToken(requestToken, token);
+            }
+            catch (Exception ex)
+            {
+                throw new UserAuthenticationException("Failed to get access token: " + ex.Message);
+            }
         }
     }
 }

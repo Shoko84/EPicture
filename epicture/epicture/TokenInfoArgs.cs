@@ -9,16 +9,16 @@ namespace epicture
 {
     public class TokenInfoArgs : RoutedEventArgs
     {
-        private readonly string publicKey;
+        private readonly string token;
 
-        public string PublicKey
+        public string Token
         {
-            get { return publicKey; }
+            get { return token; }
         }
 
-        public TokenInfoArgs(RoutedEvent routedEvent, string publicKey) : base(routedEvent)
+        public TokenInfoArgs(RoutedEvent routedEvent, string token) : base(routedEvent)
         {
-            this.publicKey = publicKey;
+            this.token = token;
         }
     }
 }

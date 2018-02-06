@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace epicture
 {
-    public class UserNotAuthenticatedException : Exception
+    public class UserAuthenticationException : Exception
     {
-        public UserNotAuthenticatedException(string message) : base(message)
+        public UserAuthenticationException(string message) : base(message)
         {
 
         }

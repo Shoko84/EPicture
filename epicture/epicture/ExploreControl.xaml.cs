@@ -22,38 +22,36 @@ namespace epicture
     public partial class ExploreControl : UserControl
     {
         PictureViewer   pictureViewer;
-        uint            CurrentPage;
+        TokenAuthentificationControl tokenAuthentificationControl;
 
         public ExploreControl()
         {
             InitializeComponent();
-            CurrentPage = 1;
             pictureViewer = new PictureViewer();
             PictureViewerControl.Content = pictureViewer;
 
-            AddHandler(PictureViewer.PrevPageAskedEvent,
-                       new RoutedEventHandler(PrevPageAskedHandler));
+            AddHandler(PictureViewer.UserAuthenticatedRequestFromPictureViewerEvent,
+                       new RoutedEventHandler(UserAuthenticatedRequestFromPictureViewerHandler));
 
-            AddHandler(PictureViewer.NextPageAskedEvent,
-                       new RoutedEventHandler(NextPageAskedHandler));
+            AddHandler(TokenAuthentificationControl.ConfirmUserTokenEvent,
+                       new RoutedEventHandler(ConfirmUserTokenHandler));
         }
 
         private void FindButton_Click(object sender, RoutedEventArgs e)
         {
-            CurrentPage = 1;
-            pictureViewer.SetPictures(FlickrManager.Instance.SearchPhotos(SearchTextBox.Text, 20, CurrentPage), CurrentPage);
+            pictureViewer.SetPictures(FlickrManager.Instance.SearchPhotos(SearchTextBox.Text, 20, 1), 1);
         }
 
-        private void PrevPageAskedHandler(object sender, RoutedEventArgs e)
+        private void UserAuthenticatedRequestFromPictureViewerHandler(object sender, RoutedEventArgs e)
         {
-            CurrentPage -= 1;
-            pictureViewer.SetPictures(FlickrManager.Instance.SearchPhotos(SearchTextBox.Text, 20, CurrentPage), CurrentPage);
+            tokenAuthentificationControl = new TokenAuthentificationControl();
+            PictureViewerControl.Content = tokenAuthentificationControl;
         }
 
-        private void NextPageAskedHandler(object sender, RoutedEventArgs e)
+        private void ConfirmUserTokenHandler(object sender, RoutedEventArgs e)
         {
-            CurrentPage += 1;
-            pictureViewer.SetPictures(FlickrManager.Instance.SearchPhotos(SearchTextBox.Text, 20, CurrentPage), CurrentPage);
+            pictureViewer.SetPictures(FlickrManager.Instance.SearchPhotos());
+            PictureViewerControl.Content = pictureViewer;
         }
     }
 }
