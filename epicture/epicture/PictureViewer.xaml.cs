@@ -22,23 +22,45 @@ namespace epicture
     public partial class PictureViewer : UserControl
     {
         PhotoCollection Pictures;
-        uint            CurrentPage;
+        private uint    currentPage;
+        public uint     CurrentPage { get { return currentPage; } }
+        public bool     HideFavoriteButton { get; set; }
 
         public static readonly RoutedEvent UserAuthenticatedRequestFromPictureViewerEvent =
             EventManager.RegisterRoutedEvent("UserAuthenticatedRequestFromPictureViewerEvent", RoutingStrategy.Bubble,
             typeof(RoutedEventArgs), typeof(PictureViewer));
 
+        public static readonly RoutedEvent ChangeFavoriteFromPictureViewerEvent =
+            EventManager.RegisterRoutedEvent("ChangeFavoriteFromPictureViewerEvent", RoutingStrategy.Bubble,
+            typeof(PictureInfoArgs), typeof(PictureViewer));
+
+        public static readonly RoutedEvent PreviousPageClickedEvent =
+            EventManager.RegisterRoutedEvent("PreviousPageClickedEvent", RoutingStrategy.Bubble,
+            typeof(RoutedEventArgs), typeof(PictureViewer));
+
+        public static readonly RoutedEvent NextPageClickedEvent =
+            EventManager.RegisterRoutedEvent("NextPageClickedEvent", RoutingStrategy.Bubble,
+            typeof(RoutedEventArgs), typeof(PictureViewer));
+
         public PictureViewer()
         {
             InitializeComponent();
-            CurrentPage = 1;
+            currentPage = 1;
+            HideFavoriteButton = false;
             Pictures = new PhotoCollection();
 
             AddHandler(Picture.UserAuthenticatedRequestFromPictureEvent,
                        new RoutedEventHandler(UserAuthenticatedRequestFromPictureHandler));
 
-            AddHandler(Picture.ChangeFavoriteEvent,
+            AddHandler(Picture.ChangeFavoriteFromPictureEvent,
                        new RoutedEventHandler(ChangeFavoriteHandler));
+        }
+
+        public void SetCurrentPage(uint page)
+        {
+            currentPage = (page == 0) ? (1) : (page);
+            if (page == 1)
+                PrevPageButton.IsEnabled = false;
         }
 
         private void UserAuthenticatedRequestFromPictureHandler(object sender, RoutedEventArgs e)
@@ -47,9 +69,9 @@ namespace epicture
         }
         private void ChangeFavoriteHandler(object sender, RoutedEventArgs e)
         {
-            //PictureInfoArgs args = e as PictureInfoArgs;
+            PictureInfoArgs args = e as PictureInfoArgs;
 
-            SetPictures(FlickrManager.Instance.SearchPhotos());
+            RaiseEvent(new PictureInfoArgs(PictureViewer.ChangeFavoriteFromPictureViewerEvent, args.Photo));
         }
 
         public void SetPictures(PhotoCollection pictures)
@@ -61,7 +83,7 @@ namespace epicture
         public void SetPictures(PhotoCollection pictures, uint currentPage)
         {
             Pictures = pictures;
-            CurrentPage = currentPage;
+            this.currentPage = currentPage;
             PrevPageButton.IsEnabled = (CurrentPage == 1) ? (false) : (true);
             RefreshPicturesOnScreen();
         }
@@ -69,32 +91,29 @@ namespace epicture
         private void RefreshPicturesOnScreen()
         {
             ViewerContainer.Children.Clear();
+            var p = Pictures.Count;
             for (var i = 0; i < Pictures.Count; ++i)
             {
-                var p = Pictures[i];
-                Picture picture = new Picture(Pictures[i])
-                {
-                    Margin = new Thickness(15)
-                };
+                Picture picture = new Picture(Pictures[i]);
+                picture.Margin = new Thickness(15);
+                picture.PictureFavoriteButton.Visibility = (HideFavoriteButton) ? (Visibility.Hidden) : (Visibility.Visible);
                 ViewerContainer.Children.Add(picture);
             }
         }
 
         private void PrevPageButton_Click(object sender, RoutedEventArgs e)
         {
-            CurrentPage -= 1;
+            currentPage -= 1;
             if (CurrentPage == 1)
                 PrevPageButton.IsEnabled = false;
-            SetPictures(FlickrManager.Instance.SearchPhotos(20, CurrentPage), CurrentPage);
-            ScrollerViewer.ScrollToTop();
+            RaiseEvent(new RoutedEventArgs(PictureViewer.PreviousPageClickedEvent));
         }
 
         private void NextPageButton_Click(object sender, RoutedEventArgs e)
         {
-            CurrentPage += 1;
+            currentPage += 1;
             PrevPageButton.IsEnabled = true;
-            SetPictures(FlickrManager.Instance.SearchPhotos(20, CurrentPage), CurrentPage);
-            ScrollerViewer.ScrollToTop();
+            RaiseEvent(new RoutedEventArgs(PictureViewer.NextPageClickedEvent));
         }
     }
 }

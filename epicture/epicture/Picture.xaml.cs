@@ -27,8 +27,8 @@ namespace epicture
             EventManager.RegisterRoutedEvent("UserAuthenticatedRequestFromPictureEvent", RoutingStrategy.Bubble,
             typeof(RoutedEventArgs), typeof(Picture));
 
-        public static readonly RoutedEvent ChangeFavoriteEvent =
-            EventManager.RegisterRoutedEvent("ChangeFavoriteEvent", RoutingStrategy.Bubble,
+        public static readonly RoutedEvent ChangeFavoriteFromPictureEvent =
+            EventManager.RegisterRoutedEvent("ChangeFavoriteFromPictureEvent", RoutingStrategy.Bubble,
             typeof(PictureInfoArgs), typeof(Picture));
 
         public Picture(Photo photoInfo)
@@ -50,7 +50,7 @@ namespace epicture
                 {
                     FlickrManager.Instance.AddFavoritePicture(PhotoInfo.PhotoId);
                     PictureFavoriteButton.Content = "Unfavorite";
-                    RaiseEvent(new PictureInfoArgs(Picture.ChangeFavoriteEvent, PhotoInfo));
+                    RaiseEvent(new PictureInfoArgs(Picture.ChangeFavoriteFromPictureEvent, PhotoInfo));
                 }
                 catch (UserAuthenticationException)
                 {
@@ -64,7 +64,7 @@ namespace epicture
                 {
                     FlickrManager.Instance.RemoveFavoritePicture(PhotoInfo.PhotoId);
                     PictureFavoriteButton.Content = "Favorite";
-                    RaiseEvent(new PictureInfoArgs(Picture.ChangeFavoriteEvent, PhotoInfo));
+                    RaiseEvent(new PictureInfoArgs(Picture.ChangeFavoriteFromPictureEvent, PhotoInfo));
                 }
                 catch (UserAuthenticationException)
                 {

@@ -13,9 +13,24 @@ namespace epicture
         private OAuthRequestToken requestToken;
         private OAuthAccessToken accessToken;
 
-        private string localTags;
-        private uint perPage;
-        private uint localCurrentPage;
+        private string LocalTags;
+        private uint LocalPerPage;
+        private uint LocalSearchCurrentPage;
+        private uint LocalFavoriteCurrentPage;
+        public string LocalUserId { get; set; }
+
+        public enum SearchType : uint
+        {
+            USERID = 0,
+            USERNAME = 1,
+            EMAIL = 2
+        }
+
+        public enum PublicSearchType : uint
+        {
+            USERNAME = 1,
+            EMAIL = 2
+        }
 
         private static FlickrManager instance;
         public static FlickrManager Instance
@@ -29,9 +44,11 @@ namespace epicture
 
         private FlickrManager()
         {
-            localTags = "";
-            perPage = 20;
-            localCurrentPage = 1;
+            LocalTags = "";
+            LocalPerPage = 20;
+            LocalSearchCurrentPage = 1;
+            LocalFavoriteCurrentPage = 1;
+            LocalUserId = "";
         }
 
         public void Connect(string publicKey, string secretKey)
@@ -41,14 +58,14 @@ namespace epicture
 
         public PhotoCollection SearchPhotos()
         {
-            if (localTags != "")
+            if (LocalTags != "")
             {
-                var options = new PhotoSearchOptions { Tags = localTags, PerPage = Convert.ToInt32(perPage), Page = Convert.ToInt32(localCurrentPage) };
+                var options = new PhotoSearchOptions { Tags = LocalTags, PerPage = Convert.ToInt32(LocalPerPage), Page = Convert.ToInt32(LocalSearchCurrentPage) };
                 PhotoCollection photos = Client.PhotosSearch(options);
 
-                if (Client.OAuthAccessToken != null)
+                if (IsUserAuthenticated())
                 {
-                    PhotoCollection favorites = SearchFavorites();
+                    PhotoCollection favorites = SearchFavorites(accessToken.UserId, SearchType.USERID);
 
                     for (var i = 0; i < photos.Count; ++i)
                     {
@@ -68,40 +85,85 @@ namespace epicture
 
         public PhotoCollection SearchPhotos(uint page)
         {
-            localCurrentPage = page;
+            LocalSearchCurrentPage = page;
             return (SearchPhotos());
         }
 
         public PhotoCollection SearchPhotos(uint perPage, uint page)
         {
-            this.perPage = perPage;
-            localCurrentPage = page;
+            this.LocalPerPage = perPage;
+            LocalSearchCurrentPage = page;
             return (SearchPhotos());
         }
 
         public PhotoCollection SearchPhotos(string tags, uint perPage, uint page)
         {
-            localTags = tags;
-            this.perPage = perPage;
-            localCurrentPage = page;
+            LocalTags = tags;
+            this.LocalPerPage = perPage;
+            LocalSearchCurrentPage = page;
             return (SearchPhotos());
+        }
+
+        public UserInfos GetUserInfos(string user, PublicSearchType type)
+        {
+            FoundUser foundUser = null;
+
+            switch (type)
+            {
+                case PublicSearchType.USERNAME:
+                    foundUser = Client.PeopleFindByUserName(user);
+                    break;
+                case PublicSearchType.EMAIL:
+                    foundUser = Client.PeopleFindByEmail(user);
+                    break;
+                default:
+                    break;
+            }
+            return (new UserInfos(foundUser.FullName, foundUser.UserName, foundUser.UserId));
+        }
+
+        public PhotoCollection SearchFavorites(string user, uint page, SearchType type)
+        {
+            LocalFavoriteCurrentPage = page;
+            if (type == SearchType.USERID)
+                LocalUserId = user;
+            else
+            {
+                UserInfos userInfos = GetUserInfos(user, (PublicSearchType)type);
+                LocalUserId = userInfos.UserId;
+            }
+
+            return (SearchFavorites());
+        }
+
+        public PhotoCollection SearchFavorites(string user, SearchType type)
+        {
+            if (type == SearchType.USERID)
+                LocalUserId = user;
+            else
+            {
+                UserInfos userInfos = GetUserInfos(user, (PublicSearchType)type);
+                LocalUserId = userInfos.UserId;
+            }
+
+            return (SearchFavorites());
+        }
+
+        public PhotoCollection SearchFavorites(uint page)
+        {
+            LocalFavoriteCurrentPage = page;
+            return (SearchFavorites());
         }
 
         public PhotoCollection SearchFavorites()
         {
-            if (Client.OAuthAccessToken != null)
-            {
-                PhotoCollection photos = Client.FavoritesGetList();
-
-                return (photos);
-            }
-            else
-                throw new UserAuthenticationException("The user is not authenticated.");
+            PhotoCollection photos = Client.FavoritesGetPublicList(LocalUserId, DateTime.MinValue, DateTime.MaxValue, PhotoSearchExtras.All, Convert.ToInt32(LocalFavoriteCurrentPage), 20);
+            return (photos);
         }
 
         public void AddFavoritePicture(string photoId)
         {
-            if (Client.OAuthAccessToken != null)
+            if (IsUserAuthenticated())
                 Client.FavoritesAdd(photoId);
             else
                 throw new UserAuthenticationException("The user is not authenticated.");
@@ -109,7 +171,7 @@ namespace epicture
 
         public void RemoveFavoritePicture(string photoId)
         {
-            if (Client.OAuthAccessToken != null)
+            if (IsUserAuthenticated())
                 Client.FavoritesRemove(photoId);
             else
                 throw new UserAuthenticationException("The user is not authenticated.");
@@ -117,6 +179,8 @@ namespace epicture
 
         public void UserAuthenticationRequest()
         {
+            accessToken = null;
+            Client.OAuthAccessToken = null;
             requestToken = Client.OAuthGetRequestToken("oob");
 
             string url = Client.OAuthCalculateAuthorizationUrl(requestToken.Token, AuthLevel.Read | AuthLevel.Write);
@@ -134,6 +198,17 @@ namespace epicture
             {
                 throw new UserAuthenticationException("Failed to get access token: " + ex.Message);
             }
+        }
+        public bool IsUserAuthenticated()
+        {
+            return (Client.OAuthAccessToken != null);
+        }
+
+        public UserInfos UserInfos()
+        {
+            if (accessToken != null)
+                return (new UserInfos(accessToken.FullName, accessToken.Username, accessToken.UserId));
+            throw new UserAuthenticationException("The user is not authenticated.");
         }
     }
 }

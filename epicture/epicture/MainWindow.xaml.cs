@@ -26,15 +26,67 @@ namespace epicture
         ExploreControl                  exploreControl;
         FavoritesControl                favoritesControl;
         UploadControl                   uploadControl;
+        TokenAuthentificationControl    tokenAuthentificationControl;
+        UserControl                     processingControl;
 
         public MainWindow()
         {
             InitializeComponent();
             FlickrManager.Instance.Connect("b0cfac361f6ef2f56451b914bbb1faf9", "669e471cad095d80");
             exploreControl = new ExploreControl();
-            uploadControl = new UploadControl();
             favoritesControl = new FavoritesControl();
+            uploadControl = new UploadControl();
             ContentControl.Content = exploreControl;
+
+            AddHandler(ExploreControl.UserAuthenticatedRequestFromExploreControlEvent,
+                       new RoutedEventHandler(UserAuthenticatedRequestFromExploreControlHandler));
+
+            AddHandler(FavoritesControl.UserAuthenticatedRequestFromFavoritesControlEvent,
+                       new RoutedEventHandler(UserAuthenticatedRequestFromFavoritesControlHandler));
+
+            AddHandler(TokenAuthentificationControl.ConfirmUserTokenEvent,
+                       new RoutedEventHandler(ConfirmUserTokenHandler));
+        }
+
+        private void UserAuthenticatedRequestFromExploreControlHandler(object sender, RoutedEventArgs e)
+        {
+            processingControl = exploreControl;
+            tokenAuthentificationControl = new TokenAuthentificationControl();
+            ContentControl.Content = tokenAuthentificationControl;
+        }
+        private void UserAuthenticatedRequestFromFavoritesControlHandler(object sender, RoutedEventArgs e)
+        {
+            processingControl = favoritesControl;
+            tokenAuthentificationControl = new TokenAuthentificationControl();
+            ContentControl.Content = tokenAuthentificationControl;
+        }
+
+        private void ConfirmUserTokenHandler(object sender, RoutedEventArgs e)
+        {
+            ExploreControl _exploreControl = processingControl as ExploreControl;
+            FavoritesControl _favoritesControl = processingControl as FavoritesControl;
+            UploadControl _uploadControl = processingControl as UploadControl;
+
+            if (_exploreControl != null)
+                _exploreControl.PictureViewer.SetPictures(FlickrManager.Instance.SearchPhotos());
+            else if (_favoritesControl != null)
+                _favoritesControl.PictureViewer.SetPictures(FlickrManager.Instance.SearchFavorites());
+            else if (_uploadControl != null)
+            {
+
+            }
+
+            ContentControl.Content = processingControl;
+            processingControl = null;
+            if (favoritesControl != null)
+            {
+                favoritesControl.UserInfos = FlickrManager.Instance.UserInfos();
+                if (FlickrManager.Instance.LocalUserId == favoritesControl.UserInfos.UserId)
+                {
+                    favoritesControl.PictureViewer.HideFavoriteButton = false;
+                    favoritesControl.PictureViewer.SetPictures(FlickrManager.Instance.SearchFavorites(FlickrManager.Instance.LocalUserId, FlickrManager.SearchType.USERID), 1);
+                }
+            }
         }
 
         private void TopNavBarButtonHandler_Click(object sender, RoutedEventArgs e)
@@ -66,7 +118,9 @@ namespace epicture
 
         private void UploadLabel_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            ContentControl.Content = uploadControl;
+            //if (uploadControl == null)
+            //    uploadControl = new UploadControl();
+            //ContentControl.Content = uploadControl;
         }
 
         private void FavoritesLabel_MouseDown(object sender, MouseButtonEventArgs e)
