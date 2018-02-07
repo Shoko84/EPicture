@@ -9,7 +9,8 @@
     <Grid Name="WindowGrid" Background="#2f3640">
         <Grid.RowDefinitions>
             <RowDefinition Height="70"/>
-            <RowDefinition/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
         <Grid Name="TopNavBar" Background="#1e272e" Grid.Row="0">
             <Grid.RowDefinitions>
@@ -32,6 +33,13 @@
         </Grid>
         <Grid Grid.Row="1" Margin="5">
             <ContentControl Name="ContentControl"/>
+        </Grid>
+        <Grid Name="Footerbar" Background="#1e272e" Grid.Row="2">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <TextBlock Text="Username:" Foreground="#f5f6fa" VerticalAlignment="Center" FontSize="14" Visibility="Hidden"/>
+                <TextBlock Margin="7,0,0,0" Text="" Foreground="#f5f6fa" VerticalAlignment="Center" Visibility="Hidden"/>
+                <Button Margin="15,0,10,0" Content="Login" Width="50" Height="24"/>
+            </StackPanel>
         </Grid>
     </Grid>
 </Window>

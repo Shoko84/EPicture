@@ -21,37 +21,57 @@ namespace epicture
     /// </summary>
     public partial class ExploreControl : UserControl
     {
-        PictureViewer   pictureViewer;
-        TokenAuthentificationControl tokenAuthentificationControl;
+        public PictureViewer   PictureViewer;
+
+        public static readonly RoutedEvent UserAuthenticatedRequestFromExploreControlEvent =
+            EventManager.RegisterRoutedEvent("UserAuthenticatedRequestFromExploreControlEvent", RoutingStrategy.Bubble,
+            typeof(RoutedEventArgs), typeof(ExploreControl));
 
         public ExploreControl()
         {
             InitializeComponent();
-            pictureViewer = new PictureViewer();
-            PictureViewerControl.Content = pictureViewer;
+            PictureViewer = new PictureViewer();
+            PictureViewer.NextPageButton.IsEnabled = false;
+            PictureViewerControl.Content = PictureViewer;
 
             AddHandler(PictureViewer.UserAuthenticatedRequestFromPictureViewerEvent,
                        new RoutedEventHandler(UserAuthenticatedRequestFromPictureViewerHandler));
 
-            AddHandler(TokenAuthentificationControl.ConfirmUserTokenEvent,
-                       new RoutedEventHandler(ConfirmUserTokenHandler));
+            AddHandler(PictureViewer.ChangeFavoriteFromPictureViewerEvent,
+                       new RoutedEventHandler(ChangeFavoriteFromPictureViewerHandler));
+
+            AddHandler(PictureViewer.PreviousPageClickedEvent,
+                       new RoutedEventHandler(PageChangedClickedHandler));
+
+            AddHandler(PictureViewer.NextPageClickedEvent,
+                       new RoutedEventHandler(PageChangedClickedHandler));
         }
 
         private void FindButton_Click(object sender, RoutedEventArgs e)
         {
-            pictureViewer.SetPictures(FlickrManager.Instance.SearchPhotos(SearchTextBox.Text, 20, 1), 1);
+            if (SearchTextBox.Text != "")
+            {
+                PictureViewer.SetCurrentPage(1);
+                PictureViewer.NextPageButton.IsEnabled = true;
+                PictureViewer.SetPictures(FlickrManager.Instance.SearchPhotos(SearchTextBox.Text, 20, 1), 1);
+                PictureViewer.ScrollerViewer.ScrollToTop();
+            }
         }
 
         private void UserAuthenticatedRequestFromPictureViewerHandler(object sender, RoutedEventArgs e)
         {
-            tokenAuthentificationControl = new TokenAuthentificationControl();
-            PictureViewerControl.Content = tokenAuthentificationControl;
+            RaiseEvent(new RoutedEventArgs(ExploreControl.UserAuthenticatedRequestFromExploreControlEvent));
         }
 
-        private void ConfirmUserTokenHandler(object sender, RoutedEventArgs e)
+        private void ChangeFavoriteFromPictureViewerHandler(object sender, RoutedEventArgs e)
         {
-            pictureViewer.SetPictures(FlickrManager.Instance.SearchPhotos());
-            PictureViewerControl.Content = pictureViewer;
+            PictureViewer.SetPictures(FlickrManager.Instance.SearchPhotos());
+        }
+ 
+        private void PageChangedClickedHandler(object sender, RoutedEventArgs e)
+        {
+            PictureViewer.SetPictures(FlickrManager.Instance.SearchPhotos(20, PictureViewer.CurrentPage));
+            PictureViewer.ScrollerViewer.ScrollToTop();
         }
     }
 }
