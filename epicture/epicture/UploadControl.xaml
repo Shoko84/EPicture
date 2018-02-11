@@ -5,8 +5,22 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:epicture"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="370" d:DesignWidth="560">
     <Grid>
-            
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <ContentControl Name="UploadControlStep2" Grid.Row="0" Grid.RowSpan="4" Visibility="Hidden"/>
+        <Label Name="TopLabelInfo" Grid.Row="0" Content="Wanna upload a picture ?" Margin="3,10,3,3" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="#f5f6fa" FontStyle="Italic"/>
+        <StackPanel Name="FileSelectionContainer" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
+            <TextBlock Name="FileSelectedLabel" Text="No file selected" MaxWidth="180" Margin="3,10,3,3" VerticalAlignment="Center" Foreground="#f5f6fa" FontStyle="Italic" TextTrimming="WordEllipsis"/>
+            <Button Name="SelectFileButton" Margin="8,10,3,3" Content="Select file" Width="70" Height="20" VerticalContentAlignment="Center" Click="SelectFileButton_Click"/>
+            <Button Name="UploadButton" Margin="30,10,3,3" Content="Upload" Width="55" Height="20" VerticalContentAlignment="Center" Click="UploadButton_Click"/>
+        </StackPanel>
+        <Label Name="UploadedPicturesLabel" Grid.Row="2" Content="Your uploaded pictures: " Foreground="#f5f6fa" Visibility="Hidden"/> 
+        <ContentControl Grid.Row="3" Name="PictureViewerControl" Visibility="Hidden"/>
     </Grid>
 </UserControl>

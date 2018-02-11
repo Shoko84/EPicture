@@ -38,7 +38,7 @@ namespace epicture
             }
             catch (UserAuthenticationException)
             {
-                //TODO: try again
+                MessageBox.Show("The token was incorrect, please try again", "Incorrect token", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
         }
     }

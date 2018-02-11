@@ -44,6 +44,9 @@ namespace epicture
             AddHandler(FavoritesControl.UserAuthenticatedRequestFromFavoritesControlEvent,
                        new RoutedEventHandler(UserAuthenticatedRequestFromFavoritesControlHandler));
 
+            AddHandler(UploadControl.UserAuthenticatedRequestFromUploadControlEvent,
+                       new RoutedEventHandler(UserAuthenticatedRequestFromUploadControlHandler));
+
             AddHandler(TokenAuthentificationControl.ConfirmUserTokenEvent,
                        new RoutedEventHandler(ConfirmUserTokenHandler));
         }
@@ -54,9 +57,17 @@ namespace epicture
             tokenAuthentificationControl = new TokenAuthentificationControl();
             ContentControl.Content = tokenAuthentificationControl;
         }
+
         private void UserAuthenticatedRequestFromFavoritesControlHandler(object sender, RoutedEventArgs e)
         {
             processingControl = favoritesControl;
+            tokenAuthentificationControl = new TokenAuthentificationControl();
+            ContentControl.Content = tokenAuthentificationControl;
+        }
+
+        private void UserAuthenticatedRequestFromUploadControlHandler(object sender, RoutedEventArgs e)
+        {
+            processingControl = uploadControl;
             tokenAuthentificationControl = new TokenAuthentificationControl();
             ContentControl.Content = tokenAuthentificationControl;
         }
@@ -73,7 +84,9 @@ namespace epicture
                 _favoritesControl.PictureViewer.SetPictures(FlickrManager.Instance.SearchFavorites());
             else if (_uploadControl != null)
             {
-
+                _uploadControl.PictureViewer.SetPictures(FlickrManager.Instance.SearchUploadedPictures());
+                _uploadControl.UploadedPicturesLabel.Visibility = Visibility.Visible;
+                _uploadControl.PictureViewerControl.Visibility = Visibility.Visible;
             }
 
             ContentControl.Content = processingControl;
@@ -118,9 +131,7 @@ namespace epicture
 
         private void UploadLabel_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            //if (uploadControl == null)
-            //    uploadControl = new UploadControl();
-            //ContentControl.Content = uploadControl;
+            ContentControl.Content = uploadControl;
         }
 
         private void FavoritesLabel_MouseDown(object sender, MouseButtonEventArgs e)
