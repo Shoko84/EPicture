@@ -51,10 +51,13 @@ namespace epicture
         {
             if (SearchTextBox.Text != "")
             {
-                PictureViewer.SetCurrentPage(1);
-                PictureViewer.NextPageButton.IsEnabled = true;
-                PictureViewer.SetPictures(FlickrManager.Instance.SearchPhotos(SearchTextBox.Text, 20, 1), 1);
-                PictureViewer.ScrollerViewer.ScrollToTop();
+                FlickrManager.Instance.SearchPhotosAsync(SearchTextBox.Text, 50, 1, delegate (PhotoCollection photos)
+                {
+                    PictureViewer.SetCurrentPage(1);
+                    PictureViewer.NextPageButton.IsEnabled = true;
+                    PictureViewer.SetPictures(photos, 1);
+                    PictureViewer.ScrollerViewer.ScrollToTop();
+                });
             }
         }
 
@@ -65,13 +68,19 @@ namespace epicture
 
         private void ChangeFavoriteFromPictureViewerHandler(object sender, RoutedEventArgs e)
         {
-            PictureViewer.SetPictures(FlickrManager.Instance.SearchPhotos());
+            FlickrManager.Instance.SearchPhotosAsync(delegate (PhotoCollection photos)
+            {
+                PictureViewer.SetPictures(photos);
+            });
         }
- 
+
         private void PageChangedClickedHandler(object sender, RoutedEventArgs e)
         {
-            PictureViewer.SetPictures(FlickrManager.Instance.SearchPhotos(20, PictureViewer.CurrentPage));
-            PictureViewer.ScrollerViewer.ScrollToTop();
+            FlickrManager.Instance.SearchPhotosAsync(50, PictureViewer.CurrentPage, delegate (PhotoCollection photos)
+            {
+                PictureViewer.SetPictures(photos);
+                PictureViewer.ScrollerViewer.ScrollToTop();
+            });
         }
     }
 }

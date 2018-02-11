@@ -85,12 +85,21 @@ namespace epicture
             UploadControl _uploadControl = processingControl as UploadControl;
 
             if (_exploreControl != null)
-                _exploreControl.PictureViewer.SetPictures(FlickrManager.Instance.SearchPhotos());
-            else if (_favoritesControl != null)
-                _favoritesControl.PictureViewer.SetPictures(FlickrManager.Instance.SearchFavorites());
+                FlickrManager.Instance.SearchPhotosAsync(delegate (PhotoCollection photos)
+                {
+                    _exploreControl.PictureViewer.SetPictures(photos);
+                });
+            else if (_favoritesControl != null && FlickrManager.Instance.LocalFavoriteUserId == FlickrManager.Instance.UserInfos().UserId)
+                FlickrManager.Instance.SearchFavoritesAsync(delegate (FlickrResult<PhotoCollection> photos)
+                {
+                    _favoritesControl.PictureViewer.SetPictures(photos.Result);
+                });
             else if (_uploadControl != null)
             {
-                _uploadControl.PictureViewer.SetPictures(FlickrManager.Instance.SearchUploadedPictures());
+                FlickrManager.Instance.SearchUploadedPicturesAsync(delegate (FlickrResult<PhotoCollection> photos)
+                {
+                    _uploadControl.PictureViewer.SetPictures(photos.Result);
+                });
                 _uploadControl.UploadedPicturesLabel.Visibility = Visibility.Visible;
                 _uploadControl.PictureViewerControl.Visibility = Visibility.Visible;
             }
@@ -99,11 +108,13 @@ namespace epicture
             processingControl = null;
             if (favoritesControl != null)
             {
-                favoritesControl.UserInfos = FlickrManager.Instance.UserInfos();
-                if (FlickrManager.Instance.LocalUserId == favoritesControl.UserInfos.UserId)
+                if (FlickrManager.Instance.LocalFavoriteUserId == FlickrManager.Instance.UserInfos().UserId)
                 {
                     favoritesControl.PictureViewer.HideFavoriteButton = false;
-                    favoritesControl.PictureViewer.SetPictures(FlickrManager.Instance.SearchFavorites(FlickrManager.Instance.LocalUserId, FlickrManager.SearchType.USERID), 1);
+                    FlickrManager.Instance.SearchFavoritesAsync(FlickrManager.Instance.LocalFavoriteUserId, FlickrManager.SearchType.USERID, delegate(FlickrResult<PhotoCollection> photos)
+                    {
+                        favoritesControl.PictureViewer.SetPictures(photos.Result, 1);
+                    });
                 }
             }
         }
@@ -166,8 +177,11 @@ namespace epicture
                 UsernameValueLabel.Text = "";
                 UsernameValueLabel.Visibility = Visibility.Hidden;
                 favoritesControl.PictureViewer.HideFavoriteButton = true;
-                if (FlickrManager.Instance.LocalUserId != "")
-                    favoritesControl.PictureViewer.SetPictures(FlickrManager.Instance.SearchFavorites(FlickrManager.Instance.LocalUserId, 1, FlickrManager.SearchType.USERID), 1);
+                if (FlickrManager.Instance.LocalFavoriteUserId != "")
+                    FlickrManager.Instance.SearchFavoritesAsync(FlickrManager.Instance.LocalFavoriteUserId, 1, FlickrManager.SearchType.USERID, delegate (FlickrResult<PhotoCollection> photos)
+                    {
+                        favoritesControl.PictureViewer.SetPictures(photos.Result, 1);
+                    });
                 LoginButton.Content = "Login";
             }
         }

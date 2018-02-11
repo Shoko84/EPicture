@@ -48,9 +48,11 @@ namespace epicture
             {
                 try
                 {
-                    FlickrManager.Instance.AddFavoritePicture(PhotoInfo.PhotoId);
-                    PictureFavoriteButton.Content = "Unfavorite";
-                    RaiseEvent(new PictureInfoArgs(Picture.ChangeFavoriteFromPictureEvent, PhotoInfo));
+                    FlickrManager.Instance.AddFavoritePictureAsync(PhotoInfo.PhotoId, delegate(FlickrResult<NoResponse> arg)
+                    {
+                        PictureFavoriteButton.Content = "Unfavorite";
+                        RaiseEvent(new PictureInfoArgs(Picture.ChangeFavoriteFromPictureEvent, PhotoInfo));
+                    });
                 }
                 catch (UserAuthenticationException)
                 {
@@ -62,9 +64,11 @@ namespace epicture
             {
                 try
                 {
-                    FlickrManager.Instance.RemoveFavoritePicture(PhotoInfo.PhotoId);
-                    PictureFavoriteButton.Content = "Favorite";
-                    RaiseEvent(new PictureInfoArgs(Picture.ChangeFavoriteFromPictureEvent, PhotoInfo));
+                    FlickrManager.Instance.RemoveFavoritePictureAsync(PhotoInfo.PhotoId, delegate (FlickrResult<NoResponse> arg)
+                    {
+                        PictureFavoriteButton.Content = "Favorite";
+                        RaiseEvent(new PictureInfoArgs(Picture.ChangeFavoriteFromPictureEvent, PhotoInfo));
+                    });
                 }
                 catch (UserAuthenticationException)
                 {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FlickrNet;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,7 +21,6 @@ namespace epicture
     /// </summary>
     public partial class FavoritesControl : UserControl
     {
-        public UserInfos UserInfos;
         public PictureViewer PictureViewer;
 
         public static readonly RoutedEvent UserAuthenticatedRequestFromFavoritesControlEvent =
@@ -34,13 +34,6 @@ namespace epicture
             PictureViewer.NextPageButton.IsEnabled = false;
             PictureViewerControl.Content = PictureViewer;
             PictureViewer.HideFavoriteButton = true;
-            if (FlickrManager.Instance.IsUserAuthenticated())
-            {
-                UserInfos = FlickrManager.Instance.UserInfos();
-                SearchTextBox.Text = UserInfos.Username;
-                PictureViewer.SetPictures(FlickrManager.Instance.SearchFavorites(UserInfos.UserId, FlickrManager.SearchType.USERID), 1);
-                PictureViewer.HideFavoriteButton = false;
-            }
 
             AddHandler(PictureViewer.UserAuthenticatedRequestFromPictureViewerEvent,
                        new RoutedEventHandler(UserAuthenticatedRequestFromPictureViewerHandler));
@@ -62,13 +55,20 @@ namespace epicture
 
         private void ChangeFavoriteFromPictureViewerHandler(object sender, RoutedEventArgs e)
         {
-            PictureViewer.SetPictures(FlickrManager.Instance.SearchFavorites());
+            if (FlickrManager.Instance.UserInfos() != null && FlickrManager.Instance.LocalFavoriteUserId == FlickrManager.Instance.UserInfos().UserId)
+                FlickrManager.Instance.SearchFavoritesAsync(delegate (FlickrResult<PhotoCollection> photos)
+                {
+                    PictureViewer.SetPictures(photos.Result);
+                });
         }
 
         private void PageChangedClickedHandler(object sender, RoutedEventArgs e)
         {
-            PictureViewer.SetPictures(FlickrManager.Instance.SearchFavorites(PictureViewer.CurrentPage));
-            PictureViewer.ScrollerViewer.ScrollToTop();
+            FlickrManager.Instance.SearchFavoritesAsync(PictureViewer.CurrentPage, delegate(FlickrResult<PhotoCollection> photos)
+            {
+                PictureViewer.SetPictures(photos.Result);
+                PictureViewer.ScrollerViewer.ScrollToTop();
+            });
         }
 
         private void FindButton_Click(object sender, RoutedEventArgs e)
@@ -77,12 +77,14 @@ namespace epicture
             {
                 try
                 {
-                    PictureViewer.HideFavoriteButton = (UserInfos != null && SearchTextBox.Text == UserInfos.Username) ? (false) : (true);
-                    PictureViewer.SetPictures(FlickrManager.Instance.SearchFavorites(SearchTextBox.Text, 1, FlickrManager.SearchType.USERNAME), 1);
+                    PictureViewer.HideFavoriteButton = (FlickrManager.Instance.UserInfos() != null && SearchTextBox.Text == FlickrManager.Instance.UserInfos().Username) ? (false) : (true);
                     PictureViewer.SetCurrentPage(1);
                     PictureViewer.NextPageButton.IsEnabled = true;
-                    PictureViewer.ScrollerViewer.ScrollToTop();
-
+                    FlickrManager.Instance.SearchFavoritesAsync(SearchTextBox.Text, 1, FlickrManager.SearchType.USERNAME, delegate (FlickrResult<PhotoCollection> photos)
+                    {
+                        PictureViewer.SetPictures(photos.Result, 1);
+                        PictureViewer.ScrollerViewer.ScrollToTop();
+                    });
                 }
                 catch (FlickrNet.Exceptions.UserNotFoundException)
                 {

@@ -16,9 +16,9 @@
             <ColumnDefinition Width="70*"/>
             <ColumnDefinition Width="30*"/>
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Text="Just a few step away from your upload!" Foreground="#f5f6fa" FontSize="13"
+        <TextBlock Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Text="Just a step away from your upload!" Foreground="#f5f6fa" FontSize="13"
                    VerticalAlignment="Center" HorizontalAlignment="Center"/>
-        <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Vertical">
+        <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Center">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Name="TitleLabel" Text="Title*" Margin="3,10,3,3" VerticalAlignment="Center" Foreground="#f5f6fa" FontStyle="Italic" />
                 <TextBox Name="TitleInput" Margin="44,10,3,3" Width="260" VerticalContentAlignment="Center"/>
@@ -35,18 +35,18 @@
             </StackPanel>
             <TextBlock Margin="3,30,3,3" Text="The '*' stands for mandatory fields" Foreground="#f5f6fa" FontStyle="Italic" FontSize="10"/>
         </StackPanel>
-        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical">
+        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Center">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Name="PublicLabel" Text="Visible for everyone" Margin="3,10,3,3" VerticalAlignment="Center" Foreground="#f5f6fa" FontStyle="Italic" />
-                <CheckBox Name="PublicCheckbox" Margin="12,10,3,3" Width="260" VerticalContentAlignment="Center"/>
+                <CheckBox Name="PublicCheckbox" Margin="12,10,3,3" VerticalContentAlignment="Center" IsChecked="True"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Name="FamilyLabel" Text="Visible for family" Margin="3,20,3,3" VerticalAlignment="Center" Foreground="#f5f6fa" FontStyle="Italic" />
-                <CheckBox Name="FamilyCheckbox" Margin="26,20,3,3" Width="260" VerticalContentAlignment="Center"/>
+                <CheckBox Name="FamilyCheckbox" Margin="26,20,3,3" VerticalContentAlignment="Center"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Name="FriendsLabel" Text="Visible for friends" Margin="3,20,3,3" VerticalAlignment="Center" Foreground="#f5f6fa" FontStyle="Italic" />
-                <CheckBox Name="FriendsCheckbox" Margin="23,20,3,3" Width="260" VerticalContentAlignment="Center"/>
+                <CheckBox Name="FriendsCheckbox" Margin="23,20,3,3" VerticalContentAlignment="Center"/>
             </StackPanel>
         </StackPanel>
         <StackPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">

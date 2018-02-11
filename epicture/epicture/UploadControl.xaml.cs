@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
+using FlickrNet;
 
 namespace epicture
 {
@@ -64,14 +65,18 @@ namespace epicture
 
         private void ConfirmUploadPictureInfosHandler(object sender, RoutedEventArgs e)
         {
-            UploadPictureInfosControl control = UploadControlStep2.Content as UploadPictureInfosControl;
+            UploadPictureInfosControl control = uploadPictureStep2Control;
 
-            FlickrManager.Instance.UploadPicture(filePathPicture, control.DescriptionInput.Text, control.TagsInput.Text, control.TagsInput.Text,
-                                                 control.PublicCheckbox.IsChecked ?? false, control.FamilyCheckbox.IsChecked ?? false, control.FriendsCheckbox.IsChecked ?? false);
-            PictureViewer.SetPictures(FlickrManager.Instance.SearchUploadedPictures());
-            FileSelectedLabel.Text = "No file selected";
-            filePathPicture = null;
-            ResetUploadControlTab();
+            FlickrManager.Instance.UploadPictureAsync(filePathPicture, control.TitleInput.Text, control.DescriptionInput.Text, control.TagsInput.Text,
+                                                      control.PublicCheckbox.IsChecked ?? false, control.FamilyCheckbox.IsChecked ?? false, control.FriendsCheckbox.IsChecked ?? false,
+                                                      delegate (FlickrResult<string> file)
+                                                      {
+                                                          FlickrManager.Instance.SearchUploadedPicturesAsync(delegate (FlickrResult<PhotoCollection> photos)
+                                                          {
+                                                              PictureViewer.SetPictures(photos.Result);
+                                                              ResetUploadControlTab(true);
+                                                          });
+                                                      });
         }
 
         public void ResetUploadControlTab(bool resetFilePath = false)

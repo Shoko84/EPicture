@@ -43,7 +43,11 @@ namespace epicture
             if (TitleInput.Text == "")
                 MessageBox.Show("Enter a non-empty title", "Empty title", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             else
+            {
+                CancelButton.IsEnabled = false;
+                ConfirmButton.IsEnabled = false;
                 RaiseEvent(new RoutedEventArgs(UploadPictureInfosControl.ConfirmUploadPictureInfosEvent));
+            }
         }
     }
 }
