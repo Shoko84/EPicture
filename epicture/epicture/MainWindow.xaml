@@ -36,9 +36,9 @@
         </Grid>
         <Grid Name="Footerbar" Background="#1e272e" Grid.Row="2">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <TextBlock Text="Username:" Foreground="#f5f6fa" VerticalAlignment="Center" FontSize="14" Visibility="Hidden"/>
-                <TextBlock Margin="7,0,0,0" Text="" Foreground="#f5f6fa" VerticalAlignment="Center" Visibility="Hidden"/>
-                <Button Margin="15,0,10,0" Content="Login" Width="50" Height="24"/>
+                <TextBlock Name="UsernameLabel" Text="Username:" Foreground="#f5f6fa" VerticalAlignment="Center" FontWeight="Bold" Visibility="Hidden"/>
+                <TextBlock Name="UsernameValueLabel" Margin="7,0,0,0" Text="" Foreground="#f5f6fa" VerticalAlignment="Center" Visibility="Hidden"/>
+                <Button Name="LoginButton" Margin="15,0,10,0" Content="Login" Width="50" Height="24" Click="LoginButton_Click"/>
             </StackPanel>
         </Grid>
     </Grid>
