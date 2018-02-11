@@ -36,6 +36,7 @@ namespace epicture
             exploreControl = new ExploreControl();
             favoritesControl = new FavoritesControl();
             uploadControl = new UploadControl();
+            processingControl = null;
             ContentControl.Content = exploreControl;
 
             AddHandler(ExploreControl.UserAuthenticatedRequestFromExploreControlEvent,
@@ -74,6 +75,11 @@ namespace epicture
 
         private void ConfirmUserTokenHandler(object sender, RoutedEventArgs e)
         {
+            UsernameLabel.Visibility = Visibility.Visible;
+            UsernameValueLabel.Text = FlickrManager.Instance.UserInfos().Username;
+            UsernameValueLabel.Visibility = Visibility.Visible;
+            LoginButton.Content = "Logout";
+
             ExploreControl _exploreControl = processingControl as ExploreControl;
             FavoritesControl _favoritesControl = processingControl as FavoritesControl;
             UploadControl _uploadControl = processingControl as UploadControl;
@@ -137,6 +143,33 @@ namespace epicture
         private void FavoritesLabel_MouseDown(object sender, MouseButtonEventArgs e)
         {
             ContentControl.Content = favoritesControl;
+        }
+
+        private void LoginButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (Convert.ToString(LoginButton.Content) == "Login")
+            {
+                processingControl = ContentControl.Content as UserControl;
+                FlickrManager.Instance.UserAuthenticationRequest();
+                tokenAuthentificationControl = new TokenAuthentificationControl();
+                ContentControl.Content = tokenAuthentificationControl;
+            }
+            else
+            {
+                FlickrManager.Instance.Disconnect();
+                uploadControl.ResetUploadControlTab(true);
+                uploadControl.PictureViewer.SetPictures(new PhotoCollection());
+                uploadControl.PictureViewerControl.Visibility = Visibility.Hidden;
+                uploadControl.UploadedPicturesLabel.Visibility = Visibility.Hidden;
+
+                UsernameLabel.Visibility = Visibility.Hidden;
+                UsernameValueLabel.Text = "";
+                UsernameValueLabel.Visibility = Visibility.Hidden;
+                favoritesControl.PictureViewer.HideFavoriteButton = true;
+                if (FlickrManager.Instance.LocalUserId != "")
+                    favoritesControl.PictureViewer.SetPictures(FlickrManager.Instance.SearchFavorites(FlickrManager.Instance.LocalUserId, 1, FlickrManager.SearchType.USERID), 1);
+                LoginButton.Content = "Login";
+            }
         }
     }
 }

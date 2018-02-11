@@ -227,5 +227,12 @@ namespace epicture
                 return (new UserInfos(accessToken.FullName, accessToken.Username, accessToken.UserId));
             throw new UserAuthenticationException("The user is not authenticated.");
         }
+
+        public void Disconnect()
+        {
+            Client.OAuthAccessToken = null;
+            accessToken = null;
+            requestToken = null;
+        }
     }
 }

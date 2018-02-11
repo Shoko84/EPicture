@@ -59,12 +59,7 @@ namespace epicture
 
         private void CancelUploadPictureInfosHandler(object sender, RoutedEventArgs e)
         {
-            TopLabelInfo.Visibility = Visibility.Visible;
-            FileSelectionContainer.Visibility = Visibility.Visible;
-            UploadedPicturesLabel.Visibility = Visibility.Visible;
-            PictureViewerControl.Visibility = Visibility.Visible;
-            UploadControlStep2.Content = null;
-            UploadControlStep2.Visibility = Visibility.Hidden;
+            ResetUploadControlTab();
         }
 
         private void ConfirmUploadPictureInfosHandler(object sender, RoutedEventArgs e)
@@ -76,6 +71,16 @@ namespace epicture
             PictureViewer.SetPictures(FlickrManager.Instance.SearchUploadedPictures());
             FileSelectedLabel.Text = "No file selected";
             filePathPicture = null;
+            ResetUploadControlTab();
+        }
+
+        public void ResetUploadControlTab(bool resetFilePath = false)
+        {
+            if (resetFilePath)
+            {
+                FileSelectedLabel.Text = "No file selected";
+                filePathPicture = null;
+            }
             TopLabelInfo.Visibility = Visibility.Visible;
             FileSelectionContainer.Visibility = Visibility.Visible;
             UploadedPicturesLabel.Visibility = Visibility.Visible;
