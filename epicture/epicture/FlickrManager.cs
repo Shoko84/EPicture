@@ -161,6 +161,18 @@ namespace epicture
             return (photos);
         }
 
+        public PhotoCollection SearchUploadedPictures()
+        {
+            if (IsUserAuthenticated())
+            {
+                var options = new PartialSearchOptions { Extras = PhotoSearchExtras.Description | PhotoSearchExtras.Usage };
+                PhotoCollection photos = Client.PhotosGetNotInSet(options);
+                return (photos);
+            }
+            else
+                throw new UserAuthenticationException("The user is not authenticated.");
+        }
+
         public void AddFavoritePicture(string photoId)
         {
             if (IsUserAuthenticated())
@@ -175,6 +187,11 @@ namespace epicture
                 Client.FavoritesRemove(photoId);
             else
                 throw new UserAuthenticationException("The user is not authenticated.");
+        }
+
+        public void UploadPicture(string fileName, string title, string description, string tags, bool isPublic, bool isFamily, bool isFriend)
+        {
+            Client.UploadPicture(fileName, title, description, tags, isPublic, isFamily, isFriend);
         }
 
         public void UserAuthenticationRequest()

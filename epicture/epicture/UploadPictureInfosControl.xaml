@@ -1,0 +1,57 @@
+﻿<UserControl x:Class="epicture.UploadPictureInfosControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:epicture"
+             mc:Ignorable="d" 
+             d:DesignHeight="370" d:DesignWidth="560">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="70*"/>
+            <ColumnDefinition Width="30*"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Text="Just a few step away from your upload!" Foreground="#f5f6fa" FontSize="13"
+                   VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Vertical">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Name="TitleLabel" Text="Title*" Margin="3,10,3,3" VerticalAlignment="Center" Foreground="#f5f6fa" FontStyle="Italic" />
+                <TextBox Name="TitleInput" Margin="44,10,3,3" Width="260" VerticalContentAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Name="DescriptionLabel" Text="Description" Margin="3,20,3,3" VerticalAlignment="Top" Foreground="#f5f6fa" FontStyle="Italic" />
+                <TextBox Name="DescriptionInput" Margin="13,20,3,3" Width="260" Height="100"
+                         AcceptsReturn="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Name="TagsLabel" Text="Tags" Margin="3,20,3,3" VerticalAlignment="Top" Foreground="#f5f6fa" FontStyle="Italic" />
+                <TextBox Name="TagsInput" Margin="47,20,3,3" Width="260" VerticalContentAlignment="Center"
+                         AcceptsReturn="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+            </StackPanel>
+            <TextBlock Margin="3,30,3,3" Text="The '*' stands for mandatory fields" Foreground="#f5f6fa" FontStyle="Italic" FontSize="10"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Name="PublicLabel" Text="Visible for everyone" Margin="3,10,3,3" VerticalAlignment="Center" Foreground="#f5f6fa" FontStyle="Italic" />
+                <CheckBox Name="PublicCheckbox" Margin="12,10,3,3" Width="260" VerticalContentAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Name="FamilyLabel" Text="Visible for family" Margin="3,20,3,3" VerticalAlignment="Center" Foreground="#f5f6fa" FontStyle="Italic" />
+                <CheckBox Name="FamilyCheckbox" Margin="26,20,3,3" Width="260" VerticalContentAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Name="FriendsLabel" Text="Visible for friends" Margin="3,20,3,3" VerticalAlignment="Center" Foreground="#f5f6fa" FontStyle="Italic" />
+                <CheckBox Name="FriendsCheckbox" Margin="23,20,3,3" Width="260" VerticalContentAlignment="Center"/>
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Name="CancelButton" Content="Cancel" Width="100" Height="30" Click="CancelButton_Click"/>
+            <Button Name="ConfirmButton" Content="Confirm" Margin="80,0,0,0" Width="100" Height="30" Click="ConfirmButton_Click"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

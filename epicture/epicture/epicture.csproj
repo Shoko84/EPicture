@@ -77,6 +77,9 @@
     <Compile Include="UploadControl.xaml.cs">
       <DependentUpon>UploadControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UploadPictureInfosControl.xaml.cs">
+      <DependentUpon>UploadPictureInfosControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserInfos.cs" />
     <Compile Include="UserNotAuthenticatedException.cs" />
     <Page Include="ExploreControl.xaml">
@@ -113,6 +116,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UploadControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UploadPictureInfosControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:epicture"
         mc:Ignorable="d"
-        Title="Epicture" Height="480" Width="720">
+        Title="Epicture" Width="720" Height="500" MinWidth="720" MinHeight="500">
     <Grid Name="WindowGrid" Background="#2f3640">
         <Grid.RowDefinitions>
             <RowDefinition Height="70"/>
