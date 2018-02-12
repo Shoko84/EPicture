@@ -1,18 +1,6 @@
 ﻿using FlickrNet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace epicture
 {
@@ -21,31 +9,51 @@ namespace epicture
     /// </summary>
     public partial class PictureViewer : UserControl
     {
-        PhotoCollection Pictures;
-        private uint    currentPage;
-        public uint     CurrentPage { get { return currentPage; } }
+        private PhotoCollection Pictures;
+        /// <summary>
+        /// The current page displayed in the <see cref="PictureViewer"/>
+        /// </summary>
+        public uint     CurrentPage { get; private set; }
+        /// <summary>
+        /// Hiding or not the "Favorite" button
+        /// </summary>
         public bool     HideFavoriteButton { get; set; }
 
+        /// <summary>
+        /// Event raised if the user is asking an action where he should be authentified from an <see cref="PictureViewer"/>
+        /// </summary>
         public static readonly RoutedEvent UserAuthenticatedRequestFromPictureViewerEvent =
             EventManager.RegisterRoutedEvent("UserAuthenticatedRequestFromPictureViewerEvent", RoutingStrategy.Bubble,
             typeof(RoutedEventArgs), typeof(PictureViewer));
 
+        /// <summary>
+        /// Event raised when the user is asking to change the favorite state of a <see cref="Picture"/>
+        /// </summary>
         public static readonly RoutedEvent ChangeFavoriteFromPictureViewerEvent =
             EventManager.RegisterRoutedEvent("ChangeFavoriteFromPictureViewerEvent", RoutingStrategy.Bubble,
-            typeof(PictureInfoArgs), typeof(PictureViewer));
+            typeof(RoutedEventArgs), typeof(PictureViewer));
 
+        /// <summary>
+        /// Event raised if the user clicked the "Prev page" button from an <see cref="PictureViewer"/>
+        /// </summary>
         public static readonly RoutedEvent PreviousPageClickedEvent =
             EventManager.RegisterRoutedEvent("PreviousPageClickedEvent", RoutingStrategy.Bubble,
             typeof(RoutedEventArgs), typeof(PictureViewer));
 
+        /// <summary>
+        /// Event raised if the user clicked the "Next page" button from an <see cref="PictureViewer"/>
+        /// </summary>
         public static readonly RoutedEvent NextPageClickedEvent =
             EventManager.RegisterRoutedEvent("NextPageClickedEvent", RoutingStrategy.Bubble,
             typeof(RoutedEventArgs), typeof(PictureViewer));
 
+        /// <summary>
+        /// Constructor of the class <see cref="PictureViewer"/>
+        /// </summary>
         public PictureViewer()
         {
             InitializeComponent();
-            currentPage = 1;
+            CurrentPage = 1;
             HideFavoriteButton = false;
             Pictures = new PhotoCollection();
 
@@ -56,9 +64,13 @@ namespace epicture
                        new RoutedEventHandler(ChangeFavoriteHandler));
         }
 
+        /// <summary>
+        /// Setting the current display page
+        /// </summary>
+        /// <param name="page">The page index</param>
         public void SetCurrentPage(uint page)
         {
-            currentPage = (page == 0) ? (1) : (page);
+            CurrentPage = (page == 0) ? (1) : (page);
             if (page == 1)
                 PrevPageButton.IsEnabled = false;
         }
@@ -67,24 +79,32 @@ namespace epicture
         {
             RaiseEvent(new RoutedEventArgs(PictureViewer.UserAuthenticatedRequestFromPictureViewerEvent));
         }
+
         private void ChangeFavoriteHandler(object sender, RoutedEventArgs e)
         {
-            PictureInfoArgs args = e as PictureInfoArgs;
-
-            RaiseEvent(new PictureInfoArgs(PictureViewer.ChangeFavoriteFromPictureViewerEvent, args.Photo));
+            RaiseEvent(new RoutedEventArgs(PictureViewer.ChangeFavoriteFromPictureViewerEvent));
         }
 
+        /// <summary>
+        /// Setting pictures to be displayed on the <see cref="PictureViewer"/>
+        /// </summary>
+        /// <param name="pictures">A list of photos informations</param>
         public void SetPictures(PhotoCollection pictures)
         {
             Pictures = pictures;
             PrevPageButton.IsEnabled = (CurrentPage == 1) ? (false) : (true);
             RefreshPicturesOnScreen();
         }
+
+        /// <summary>
+        /// Setting pictures to be displayed on the <see cref="PictureViewer"/>
+        /// </summary>
+        /// <param name="pictures">A list of photos informations</param>
+        /// <param name="currentPage">The page index to be displayed</param>
         public void SetPictures(PhotoCollection pictures, uint currentPage)
         {
             Pictures = pictures;
-            this.currentPage = currentPage;
-            PrevPageButton.IsEnabled = (CurrentPage == 1) ? (false) : (true);
+            SetCurrentPage(currentPage);
             RefreshPicturesOnScreen();
         }
 
@@ -103,7 +123,7 @@ namespace epicture
 
         private void PrevPageButton_Click(object sender, RoutedEventArgs e)
         {
-            currentPage -= 1;
+            CurrentPage -= 1;
             if (CurrentPage == 1)
                 PrevPageButton.IsEnabled = false;
             RaiseEvent(new RoutedEventArgs(PictureViewer.PreviousPageClickedEvent));
@@ -111,7 +131,7 @@ namespace epicture
 
         private void NextPageButton_Click(object sender, RoutedEventArgs e)
         {
-            currentPage += 1;
+            CurrentPage += 1;
             PrevPageButton.IsEnabled = true;
             RaiseEvent(new RoutedEventArgs(PictureViewer.NextPageClickedEvent));
         }

@@ -1,18 +1,6 @@
 ﻿using FlickrNet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace epicture
 {
@@ -21,16 +9,26 @@ namespace epicture
     /// </summary>
     public partial class Picture : UserControl
     {
-        Photo PhotoInfo;
+        private Photo PhotoInfo;
 
+        /// <summary>
+        /// Event raised if the user is asking an action where he should be authentified from a <see cref="Picture"/>
+        /// </summary>
         public static readonly RoutedEvent UserAuthenticatedRequestFromPictureEvent =
             EventManager.RegisterRoutedEvent("UserAuthenticatedRequestFromPictureEvent", RoutingStrategy.Bubble,
             typeof(RoutedEventArgs), typeof(Picture));
 
+        /// <summary>
+        /// Event raised when the user is asking to change the favorite state of a <see cref="Picture"/>
+        /// </summary>
         public static readonly RoutedEvent ChangeFavoriteFromPictureEvent =
             EventManager.RegisterRoutedEvent("ChangeFavoriteFromPictureEvent", RoutingStrategy.Bubble,
-            typeof(PictureInfoArgs), typeof(Picture));
+            typeof(RoutedEventArgs), typeof(Picture));
 
+        /// <summary>
+        /// Constructor of the class <see cref="Picture"/>
+        /// </summary>
+        /// <param name="photoInfo">The API information of a picture</param>
         public Picture(Photo photoInfo)
         {
             InitializeComponent();
@@ -51,7 +49,7 @@ namespace epicture
                     FlickrManager.Instance.AddFavoritePictureAsync(PhotoInfo.PhotoId, delegate(FlickrResult<NoResponse> arg)
                     {
                         PictureFavoriteButton.Content = "Unfavorite";
-                        RaiseEvent(new PictureInfoArgs(Picture.ChangeFavoriteFromPictureEvent, PhotoInfo));
+                        RaiseEvent(new RoutedEventArgs(Picture.ChangeFavoriteFromPictureEvent));
                     });
                 }
                 catch (UserAuthenticationException)
@@ -67,7 +65,7 @@ namespace epicture
                     FlickrManager.Instance.RemoveFavoritePictureAsync(PhotoInfo.PhotoId, delegate (FlickrResult<NoResponse> arg)
                     {
                         PictureFavoriteButton.Content = "Favorite";
-                        RaiseEvent(new PictureInfoArgs(Picture.ChangeFavoriteFromPictureEvent, PhotoInfo));
+                        RaiseEvent(new RoutedEventArgs(Picture.ChangeFavoriteFromPictureEvent));
                     });
                 }
                 catch (UserAuthenticationException)

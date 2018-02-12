@@ -1,18 +1,6 @@
 ﻿using FlickrNet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace epicture
 {
@@ -21,12 +9,21 @@ namespace epicture
     /// </summary>
     public partial class FavoritesControl : UserControl
     {
-        public PictureViewer PictureViewer;
+        /// <summary>
+        /// The picture viewer for the <see cref="FavoritesControl"/>
+        /// </summary>
+        public PictureViewer PictureViewer { get; private set; }
 
+        /// <summary>
+        /// Event raised if the user is asking an action where he should be authentified from an <see cref="FavoritesControl"/>
+        /// </summary>
         public static readonly RoutedEvent UserAuthenticatedRequestFromFavoritesControlEvent =
             EventManager.RegisterRoutedEvent("UserAuthenticatedRequestFromFavoritesControlEvent", RoutingStrategy.Bubble,
             typeof(RoutedEventArgs), typeof(FavoritesControl));
 
+        /// <summary>
+        /// Constructor of the class <see cref="FavoritesControl"/>
+        /// </summary>
         public FavoritesControl()
         {
             InitializeComponent();

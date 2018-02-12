@@ -1,18 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using FlickrNet;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace epicture
 {
@@ -23,12 +13,15 @@ namespace epicture
 
     public partial class MainWindow : Window
     {
-        ExploreControl                  exploreControl;
-        FavoritesControl                favoritesControl;
-        UploadControl                   uploadControl;
-        TokenAuthentificationControl    tokenAuthentificationControl;
-        UserControl                     processingControl;
+        private ExploreControl                  exploreControl;
+        private FavoritesControl                favoritesControl;
+        private UploadControl                   uploadControl;
+        private TokenAuthentificationControl    tokenAuthentificationControl;
+        private UserControl                     processingControl;
 
+        /// <summary>
+        /// Constructor of the class <see cref="MainWindow"/>
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
