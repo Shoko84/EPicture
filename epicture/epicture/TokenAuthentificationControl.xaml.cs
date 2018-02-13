@@ -1,17 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace epicture
 {
@@ -20,10 +8,16 @@ namespace epicture
     /// </summary>
     public partial class TokenAuthentificationControl : UserControl
     {
+        /// <summary>
+        /// Event raised if the user is asking an action where he should be authentified from <see cref="UploadControl"/>
+        /// </summary>
         public static readonly RoutedEvent ConfirmUserTokenEvent =
             EventManager.RegisterRoutedEvent("ConfirmUserTokenEvent", RoutingStrategy.Bubble,
             typeof(RoutedEventArgs), typeof(TokenAuthentificationControl));
 
+        /// <summary>
+        /// Constructor of the class <see cref="TokenAuthentificationControl"/>
+        /// </summary>
         public TokenAuthentificationControl()
         {
             InitializeComponent();

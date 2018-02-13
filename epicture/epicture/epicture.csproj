@@ -66,14 +66,12 @@
     <Compile Include="Picture.xaml.cs">
       <DependentUpon>Picture.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PictureInfoArgs.cs" />
     <Compile Include="PictureViewer.xaml.cs">
       <DependentUpon>PictureViewer.xaml</DependentUpon>
     </Compile>
     <Compile Include="TokenAuthentificationControl.xaml.cs">
       <DependentUpon>TokenAuthentificationControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TokenInfoArgs.cs" />
     <Compile Include="UploadControl.xaml.cs">
       <DependentUpon>UploadControl.xaml</DependentUpon>
     </Compile>

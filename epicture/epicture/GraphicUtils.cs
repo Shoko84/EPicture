@@ -1,15 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
 namespace epicture
 {
+    /// <summary>
+    /// Container of static functions for graphics drawing
+    /// </summary>
     public class GraphicUtils
     {
+        /// <summary>
+        /// Load an image by an url
+        /// </summary>
+        /// <param name="imageUrl">The image URL</param>
+        /// <returns>An <see cref="Image"/></returns>
         public static Image LoadImage(string imageUrl)
         {
             Image image = new Image();
@@ -25,6 +29,13 @@ namespace epicture
             return (image);
         }
 
+        /// <summary>
+        /// Load an image by an url
+        /// </summary>
+        /// <param name="imageUrl">The image URL</param>
+        /// <param name="width">The width of the <see cref="Image"/></param>
+        /// <param name="width">The height of the <see cref="Image"/></param>
+        /// <returns>An <see cref="Image"/></returns>
         public static Image LoadImage(string imageUrl, uint width, uint height)
         {
             Image image = new Image();
