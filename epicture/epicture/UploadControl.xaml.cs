@@ -1,17 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Microsoft.Win32;
 using FlickrNet;
 
@@ -22,15 +10,25 @@ namespace epicture
     /// </summary>
     public partial class UploadControl : UserControl
     {
-        public PictureViewer PictureViewer;
+        /// <summary>
+        /// The picture viewer for the <see cref="UploadControl"/>
+        /// </summary>
+        public PictureViewer PictureViewer { get; private set; }
+
         private string filePathPicture;
         private OpenFileDialog fileSelectWindow;
         private UploadPictureInfosControl uploadPictureStep2Control;
 
+        /// <summary>
+        /// Event raised if the user is asking an action where he should be authentified from an <see cref="UploadControl"/>
+        /// </summary>
         public static readonly RoutedEvent UserAuthenticatedRequestFromUploadControlEvent =
             EventManager.RegisterRoutedEvent("UserAuthenticatedRequestFromUploadControlEvent", RoutingStrategy.Bubble,
             typeof(RoutedEventArgs), typeof(UploadControl));
 
+        /// <summary>
+        /// Constructor of the <see cref="UploadControl"/>
+        /// </summary>
         public UploadControl()
         {
             InitializeComponent();
@@ -79,6 +77,10 @@ namespace epicture
                                                       });
         }
 
+        /// <summary>
+        /// Reset partially the state of the <see cref="UploadControl"/> tab
+        /// </summary>
+        /// <param name="resetFilePath">Reset the filepath entered by the user if true</param>
         public void ResetUploadControlTab(bool resetFilePath = false)
         {
             if (resetFilePath)

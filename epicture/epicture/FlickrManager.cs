@@ -1,10 +1,6 @@
 ﻿using FlickrNet;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace epicture
 {
@@ -18,8 +14,14 @@ namespace epicture
         private uint LocalPerPage;
         private uint LocalSearchCurrentPage;
         private uint LocalFavoriteCurrentPage;
+        /// <summary>
+        /// The UserId for the last favorite search
+        /// </summary>
         public string LocalFavoriteUserId { get; set; }
 
+        /// <summary>
+        /// Used for searching by UserID, Username or by Email
+        /// </summary>
         public enum SearchType : uint
         {
             USERID = 0,
@@ -27,6 +29,9 @@ namespace epicture
             EMAIL = 2
         }
 
+        /// <summary>
+        /// Used for searching by Username or by Email
+        /// </summary>
         public enum PublicSearchType : uint
         {
             USERNAME = 1,
@@ -34,6 +39,9 @@ namespace epicture
         }
 
         private static FlickrManager instance;
+        /// <summary>
+        /// Getter to the <see cref="FlickrManager"/>'s instance
+        /// </summary>
         public static FlickrManager Instance
         {
             get {
@@ -52,7 +60,10 @@ namespace epicture
             LocalFavoriteUserId = "";
         }
 
-        // SEARCH PHOTOS
+        /// <summary>
+        /// Synchronous photo searching
+        /// </summary>
+        /// <returns>A list (<see cref="PhotoCollection"/>) of photos informations</returns>
         public PhotoCollection SearchPhotos()
         {
             if (LocalTags != "")
@@ -80,12 +91,23 @@ namespace epicture
                 return (new PhotoCollection());
         }
 
+        /// <summary>
+        /// Synchronous photo searching
+        /// </summary>
+        /// <param name="page">The page searching index</param>
+        /// <returns>A list (<see cref="PhotoCollection"/>) of photos informations</returns>
         public PhotoCollection SearchPhotos(uint page)
         {
             LocalSearchCurrentPage = page;
             return (SearchPhotos());
         }
 
+        /// <summary>
+        /// Synchronous photo searching
+        /// </summary>
+        /// <param name="perPage">The number of photos per page</param>
+        /// <param name="page">The page searching index</param>
+        /// <returns>A list (<see cref="PhotoCollection"/>) of photos informations</returns>
         public PhotoCollection SearchPhotos(uint perPage, uint page)
         {
             this.LocalPerPage = perPage;
@@ -93,6 +115,13 @@ namespace epicture
             return (SearchPhotos());
         }
 
+        /// <summary>
+        /// Synchronous photo searching
+        /// </summary>
+        /// <param name="tags">The tags for the search</param>
+        /// <param name="perPage">The number of photos per page</param>
+        /// <param name="page">The page searching index</param>
+        /// <returns>A list (<see cref="PhotoCollection"/>) of photos informations</returns>
         public PhotoCollection SearchPhotos(string tags, uint perPage, uint page)
         {
             LocalTags = tags;
@@ -101,6 +130,10 @@ namespace epicture
             return (SearchPhotos());
         }
 
+        /// <summary>
+        /// Asynchronous photo searching
+        /// </summary>
+        /// <param name="callback">The callback called at the end of the search</param>
         public void SearchPhotosAsync(Action<PhotoCollection> callback)
         {
             if (LocalTags != "")
@@ -138,12 +171,23 @@ namespace epicture
             }
         }
 
+        /// <summary>
+        /// Asynchronous photo searching
+        /// </summary>
+        /// <param name="page">The page searching index</param>
+        /// <param name="callback">The callback called at the end of the search</param>
         public void SearchPhotosAsync(uint page, Action<PhotoCollection> callback)
         {
             LocalSearchCurrentPage = page;
             SearchPhotosAsync(callback);
         }
 
+        /// <summary>
+        /// Asynchronous photo searching
+        /// </summary>
+        /// <param name="perPage">The number of photos per page</param>
+        /// <param name="page">The page searching index</param>
+        /// <param name="callback">The callback called at the end of the search</param>
         public void SearchPhotosAsync(uint perPage, uint page, Action<PhotoCollection> callback)
         {
             this.LocalPerPage = perPage;
@@ -151,6 +195,13 @@ namespace epicture
             SearchPhotosAsync(callback);
         }
 
+        /// <summary>
+        /// Asynchronous photo searching
+        /// </summary>
+        /// <param name="tags">The tags for the search</param>
+        /// <param name="perPage">The number of photos per page</param>
+        /// <param name="page">The page searching index</param>
+        /// <param name="callback">The callback called at the end of the search</param>
         public void SearchPhotosAsync(string tags, uint perPage, uint page, Action<PhotoCollection> callback)
         {
             LocalTags = tags;
@@ -159,10 +210,16 @@ namespace epicture
             SearchPhotosAsync(callback);
         }
 
-        // FAVORITES
+        /// <summary>
+        /// Synchronous favorites photo searching
+        /// </summary>
+        /// <param name="user">An user</param>
+        /// <param name="page">The page searching index</param>
+        /// <param name="type">The string type related to the user parameter</param>
+        /// <returns>A list (<see cref="PhotoCollection"/>) of photos informations</returns>
         public PhotoCollection SearchFavorites(string user, uint page, SearchType type)
         {
-            LocalFavoriteCurrentPage = page;
+               LocalFavoriteCurrentPage = page;
             if (type == SearchType.USERID)
                 LocalFavoriteUserId = user;
             else
@@ -174,6 +231,12 @@ namespace epicture
             return (SearchFavorites());
         }
 
+        /// <summary>
+        /// Synchronous favorites photo searching
+        /// </summary>
+        /// <param name="user">An user</param>
+        /// <param name="type">The string type related to the user parameter</param>
+        /// <returns>A list (<see cref="PhotoCollection"/>) of photos informations</returns>
         public PhotoCollection SearchFavorites(string user, SearchType type)
         {
             if (type == SearchType.USERID)
@@ -187,18 +250,34 @@ namespace epicture
             return (SearchFavorites());
         }
 
+        /// <summary>
+        /// Synchronous favorites photo searching
+        /// </summary>
+        /// <param name="page">The page searching index</param>
+        /// <returns>A list (<see cref="PhotoCollection"/>) of photos informations</returns>
         public PhotoCollection SearchFavorites(uint page)
         {
             LocalFavoriteCurrentPage = page;
             return (SearchFavorites());
         }
 
+        /// <summary>
+        /// Synchronous favorites photo searching
+        /// </summary>
+        /// <returns>A list (<see cref="PhotoCollection"/>) of photos informations</returns>
         public PhotoCollection SearchFavorites()
         {
             PhotoCollection photos = Client.FavoritesGetPublicList(LocalFavoriteUserId, DateTime.MinValue, DateTime.MaxValue, PhotoSearchExtras.All, Convert.ToInt32(LocalFavoriteCurrentPage), 50);
             return (photos);
         }
 
+        /// <summary>
+        /// Asynchronous favorites photo searching
+        /// </summary>
+        /// <param name="user">An user</param>
+        /// <param name="page">The page searching index</param>
+        /// <param name="type">The string type related to the user parameter</param>
+        /// <param name="callback">The callback called at the end of the search</param>
         public void SearchFavoritesAsync(string user, uint page, SearchType type, Action<FlickrResult<PhotoCollection>> callback)
         {
             LocalFavoriteCurrentPage = page;
@@ -213,6 +292,12 @@ namespace epicture
             SearchFavoritesAsync(callback);
         }
 
+        /// <summary>
+        /// Asynchronous favorites photo searching
+        /// </summary>
+        /// <param name="user">An user</param>
+        /// <param name="type">The string type related to the user parameter</param>
+        /// <param name="callback">The callback called at the end of the search</param>
         public void SearchFavoritesAsync(string user, SearchType type, Action<FlickrResult<PhotoCollection>> callback)
         {
             if (type == SearchType.USERID)
@@ -226,19 +311,30 @@ namespace epicture
             SearchFavoritesAsync(callback);
         }
 
+        /// <summary>
+        /// Asynchronous favorites photo searching
+        /// </summary>
+        /// <param name="page">The page searching index</param>
+        /// <param name="callback">The callback called at the end of the search</param>
         public void SearchFavoritesAsync(uint page, Action<FlickrResult<PhotoCollection>> callback)
         {
             LocalFavoriteCurrentPage = page;
             SearchFavoritesAsync(callback);
         }
 
+        /// <summary>
+        /// Asynchronous favorites photo searching
+        /// </summary>
+        /// <param name="callback">The callback called at the end of the search</param>
         public void SearchFavoritesAsync(Action<FlickrResult<PhotoCollection>> callback)
         {
             Client.FavoritesGetPublicListAsync(LocalFavoriteUserId, DateTime.MinValue, DateTime.MaxValue, PhotoSearchExtras.All, Convert.ToInt32(LocalFavoriteCurrentPage), 50, callback);
         }
 
-
-        // UPLOADED PICTURES
+        /// <summary>
+        /// Synchronous uploaded picture searching
+        /// </summary>
+        /// <returns>A list (<see cref="PhotoCollection"/>) of photos informations</returns>
         public PhotoCollection SearchUploadedPictures()
         {
             if (IsUserAuthenticated())
@@ -251,6 +347,10 @@ namespace epicture
                 throw new UserAuthenticationException("The user is not authenticated.");
         }
 
+        /// <summary>
+        /// Asynchronous uploaded picture searching
+        /// </summary>
+        /// <param name="callback">The callback called at the end of the search</param>
         public void SearchUploadedPicturesAsync(Action<FlickrResult<PhotoCollection>> callback)
         {
             if (IsUserAuthenticated())
@@ -262,8 +362,10 @@ namespace epicture
                 throw new UserAuthenticationException("The user is not authenticated.");
         }
 
-
-        // FAVORITES HANDLERS
+        /// <summary>
+        /// Synchronous favorite picture addition
+        /// </summary>
+        /// <param name="photoId">The photo's photoId to add from favorites</param>
         public void AddFavoritePicture(string photoId)
         {
             if (IsUserAuthenticated())
@@ -272,6 +374,11 @@ namespace epicture
                 throw new UserAuthenticationException("The user is not authenticated.");
         }
 
+        /// <summary>
+        /// Asynchronous favorite picture addition
+        /// </summary>
+        /// <param name="photoId">The photo's photoId to add from favorites</param>
+        /// <param name="callback">The callback called at the end of the addition</param>
         public void AddFavoritePictureAsync(string photoId, Action<FlickrResult<NoResponse>> callback)
         {
             if (IsUserAuthenticated())
@@ -280,6 +387,10 @@ namespace epicture
                 throw new UserAuthenticationException("The user is not authenticated.");
         }
 
+        /// <summary>
+        /// Synchronous favorite picture removal
+        /// </summary>
+        /// <param name="photoId">The photo's photoId to remove from favorites</param>
         public void RemoveFavoritePicture(string photoId)
         {
             if (IsUserAuthenticated())
@@ -288,6 +399,11 @@ namespace epicture
                 throw new UserAuthenticationException("The user is not authenticated.");
         }
 
+        /// <summary>
+        /// Asynchronous favorite picture removal
+        /// </summary>
+        /// <param name="photoId">The photo's photoId to remove from favorites</param>
+        /// <param name="callback">The callback called at the end of the removal</param>
         public void RemoveFavoritePictureAsync(string photoId, Action<FlickrResult<NoResponse>> callback)
         {
             if (IsUserAuthenticated())
@@ -296,19 +412,40 @@ namespace epicture
                 throw new UserAuthenticationException("The user is not authenticated.");
         }
 
-
-        //UPLOAD PICTURES
+        /// <summary>
+        /// Synchronous picture uploading
+        /// </summary>
+        /// <param name="fileName">The path to the picture</param>
+        /// <param name="title">The title for the picture</param>
+        /// <param name="description">The description for the picture</param>
+        /// <param name="tags">Tags associed to the picture</param>
+        /// <param name="isPublic">Is the picture visible to everyone?</param>
+        /// <param name="isFamily">Is the picture visible to family contacts ?</param>
+        /// <param name="isFriend">Is the picture visible for friends ?</param>
         public void UploadPicture(string fileName, string title, string description, string tags, bool isPublic, bool isFamily, bool isFriend)
         {
             Client.UploadPicture(fileName, title, description, tags, isPublic, isFamily, isFriend);
         }
 
+        /// <summary>
+        /// Asynchronous picture uploading
+        /// </summary>
+        /// <param name="fileName">The path to the picture</param>
+        /// <param name="title">The title for the picture</param>
+        /// <param name="description">The description for the picture</param>
+        /// <param name="tags">Tags associed to the picture</param>
+        /// <param name="isPublic">Is the picture visible to everyone?</param>
+        /// <param name="isFamily">Is the picture visible to family contacts ?</param>
+        /// <param name="isFriend">Is the picture visible for friends ?</param>
+        /// <param name="callback">The callback called at the end of the upload</param>
         public void UploadPictureAsync(string fileName, string title, string description, string tags, bool isPublic, bool isFamily, bool isFriend, Action<FlickrResult<string>> callback)
         {
             Client.UploadPictureAsync(File.Open(fileName, FileMode.Open), fileName, title, description, tags, isPublic, isFamily, isFriend, ContentType.Photo, SafetyLevel.Safe, HiddenFromSearch.Visible, callback);
         }
 
-        
+        /// <summary>
+        /// Request an OAuth authentification for a token to the user
+        /// </summary>
         public void UserAuthenticationRequest()
         {
             accessToken = null;
@@ -320,6 +457,10 @@ namespace epicture
             System.Diagnostics.Process.Start(url);
         }
 
+        /// <summary>
+        /// Submit the token to the API
+        /// </summary>
+        /// <param name="token">The user's token</param>
         public void UserAuthenticationAnswer(string token)
         {
             try
@@ -331,11 +472,20 @@ namespace epicture
                 throw new UserAuthenticationException("Failed to get access token: " + ex.Message);
             }
         }
+
+        /// <summary>
+        /// Returning if the user is connected to the API
+        /// </summary>
+        /// <returns>True if the user is connected</returns>
         public bool IsUserAuthenticated()
         {
             return (Client.OAuthAccessToken != null);
         }
 
+        /// <summary>
+        /// Getting the current logged-in user informations 
+        /// </summary>
+        /// <returns>Class containing the fullname, username and the userid of the user</returns>
         public UserInfos UserInfos()
         {
             if (accessToken != null)
@@ -343,6 +493,12 @@ namespace epicture
             return (null);
         }
 
+        /// <summary>
+        /// Getting informations from an user
+        /// </summary>
+        /// <param name="user">An user</param>
+        /// <param name="type">The string type related to the user parameter</param>
+        /// <returns>Class containing the fullname, username and the userid of the user</returns>
         public UserInfos GetUserInfos(string user, PublicSearchType type)
         {
             FoundUser foundUser = null;
@@ -360,11 +516,20 @@ namespace epicture
             }
             return (new UserInfos(foundUser.FullName, foundUser.UserName, foundUser.UserId));
         }
+
+        /// <summary>
+        /// Initializing the Flickr client
+        /// </summary>
+        /// <param name="publicKey">The public key</param>
+        /// <param name="secretKey">The private key</param>
         public void Connect(string publicKey, string secretKey)
         {
             Client = new Flickr(publicKey, secretKey);
         }
 
+        /// <summary>
+        /// Disconnecting the user
+        /// </summary>
         public void Disconnect()
         {
             Client.OAuthAccessToken = null;

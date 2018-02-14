@@ -1,17 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace epicture
 {
@@ -20,14 +8,23 @@ namespace epicture
     /// </summary>
     public partial class UploadPictureInfosControl : UserControl
     {
+        /// <summary>
+        /// Event raised when the user is clicking on the "Cancel" button on the <see cref="UploadPictureInfosControl"/>
+        /// </summary>
         public static readonly RoutedEvent CancelUploadPictureInfosEvent =
             EventManager.RegisterRoutedEvent("CancelUploadPictureInfosEvent", RoutingStrategy.Bubble,
             typeof(RoutedEventArgs), typeof(UploadPictureInfosControl));
 
+        /// <summary>
+        /// Event raised when the user is clicking on the "Confirm" button on the <see cref="UploadPictureInfosControl"/>
+        /// </summary>
         public static readonly RoutedEvent ConfirmUploadPictureInfosEvent =
             EventManager.RegisterRoutedEvent("ConfirmUploadPictureInfosEvent", RoutingStrategy.Bubble,
             typeof(RoutedEventArgs), typeof(UploadPictureInfosControl));
 
+        /// <summary>
+        /// Constructor of the class <see cref="UploadPictureInfosControl"/>
+        /// </summary>
         public UploadPictureInfosControl()
         {
             InitializeComponent();
