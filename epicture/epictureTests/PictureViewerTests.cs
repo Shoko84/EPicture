@@ -11,10 +11,19 @@ namespace epicture.Tests
     [TestClass()]
     public class PictureViewerTests
     {
+        PictureViewer pictureViewer;
+
         [TestMethod()]
         public void PictureViewerTest()
         {
-            //Assert.Fail();
+            try
+            {
+                pictureViewer = new PictureViewer();
+            }
+            catch
+            {
+                Assert.Fail();
+            }
         }
 
         [TestMethod()]

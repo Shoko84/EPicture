@@ -14,7 +14,14 @@ namespace epicture.Tests
         [TestMethod()]
         public void LoadImageTest()
         {
-            //Assert.Fail();
+            try
+            {
+                GraphicUtils graphUtils = new GraphicUtils();
+            }
+            catch
+            {
+                Assert.Fail();
+            }
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FlickrNet;
 
 namespace epicture.Tests
 {
@@ -14,7 +15,14 @@ namespace epicture.Tests
         [TestMethod()]
         public void PictureTest()
         {
-            //Assert.Fail();
+            try
+            {
+                Picture picture = new Picture(new Photo());
+            }
+            catch
+            {
+                Assert.Fail();
+            }
         }
     }
 }
